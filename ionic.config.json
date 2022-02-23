@@ -1,0 +1,7 @@
+{
+  "name": "econSupplyDemand",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react"
+}
