@@ -1,6 +1,5 @@
 import {ShiftBehaviors} from './ShiftEnums';
 import {ShiftResults} from './ShiftEnums';
-import {ShiftChange} from './ShiftEnums';
 
 export class SubDeterminant
 {
