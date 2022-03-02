@@ -39,11 +39,11 @@ export class Determinant
   increaseResults: ShiftResults[] | undefined;
   decreaseResults: ShiftResults[] | undefined;
 
-  constructor(shortName: string, longName: string, subDeterminants: SubDeterminant[], increaseBehavior?: ShiftBehaviors, decreaseBehavior?: ShiftBehaviors)
+  constructor(shortName: string, longName: string, increaseBehavior?: ShiftBehaviors, decreaseBehavior?: ShiftBehaviors)
   {
     this.shortName = shortName;
     this.longName = longName;
-    this.subDeterminants = subDeterminants;
+    this.subDeterminants = [];
 
     this.increaseBehavior = increaseBehavior;
     this.decreaseBehavior = decreaseBehavior;
