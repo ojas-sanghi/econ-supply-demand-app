@@ -11,14 +11,12 @@ export enum ShiftBehaviors {
 }
 
 export enum ShiftResults {
+  QuantityUnsure,
   QuantityIncrease,
   QuantityDecrease,
+  PriceUnsure,
   PriceIncrease,
   PriceDecrease,
-  QuantityDecreasePriceUnsure,
-  QuantityUnsurePriceDecrease,
-  QuantityUnsurePrinceIncrease,
-  QuantityIncreasePriceUnsure,
 }
 
 export enum ShiftChange {
