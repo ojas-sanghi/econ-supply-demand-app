@@ -6,22 +6,23 @@ export class SubDeterminant
 {
   shortName: string;
   longName: string;
-  change: ShiftChange;
 
-  behavior: ShiftBehaviors;
-  results: ShiftResults[];
+  // when this determinant is increased, what happens?
+  increaseBehavior: ShiftBehaviors;
+  // when this determinant is decreased, what happens?
+  decreaseBehavior: ShiftBehaviors;
+  increaseResults: ShiftResults[];
+  decreaseResults: ShiftResults[];
 
-  constructor(shortName: string, longName: string, change: ShiftChange, behavior: ShiftBehaviors)
+  constructor(shortName: string, longName: string, increaseBehavior: ShiftBehaviors, decreaseBehavior: ShiftBehaviors)
   {
     this.shortName = shortName;
     this.longName = longName;
-    this.change = change;
-    this.behavior = behavior;
-    let resultsOrUndefined = getResultsGivenBehavior(behavior);
-    if (typeof(resultsOrUndefined) === 'undefined') {
-      throw new Error('SubDeterminant constructor: results undefined');
-    }
-    this.results = resultsOrUndefined;
+
+    this.increaseBehavior = increaseBehavior;
+    this.decreaseBehavior = decreaseBehavior;
+    this.increaseResults = getResultsGivenBehavior(this.increaseBehavior);
+    this.decreaseResults = getResultsGivenBehavior(this.decreaseBehavior);
   }
 
 }
@@ -33,25 +34,32 @@ export class Determinant
   
   subDeterminants: SubDeterminant[];
   
-  change: ShiftChange | undefined;
-  behavior: ShiftBehaviors | undefined;
-  results: ShiftResults[] | undefined;
+  increaseBehavior: ShiftBehaviors | undefined;
+  decreaseBehavior: ShiftBehaviors | undefined;
+  increaseResults: ShiftResults[] | undefined;
+  decreaseResults: ShiftResults[] | undefined;
 
-  constructor(shortName: string, longName: string, subDeterminants: SubDeterminant[], change?: ShiftChange, behavior?: ShiftBehaviors)
+  constructor(shortName: string, longName: string, subDeterminants: SubDeterminant[], increaseBehavior?: ShiftBehaviors, decreaseBehavior?: ShiftBehaviors)
   {
     this.shortName = shortName;
     this.longName = longName;
     this.subDeterminants = subDeterminants;
-    this.change = change;
-    this.behavior = behavior;
-    this.results = getResultsGivenBehavior(behavior);
+
+    this.increaseBehavior = increaseBehavior;
+    this.decreaseBehavior = decreaseBehavior;
+    this.increaseResults = this.increaseBehavior == undefined ? undefined : getResultsGivenBehavior(this.increaseBehavior);
+    this.decreaseResults = this.decreaseBehavior == undefined ? undefined : getResultsGivenBehavior(this.decreaseBehavior);
+  }
+
+  addSubDeterminant(subShortName: string, subLongName: string, subIncreaseBehavior: ShiftBehaviors, subDecreaseBehavior: ShiftBehaviors)
+  {
+    let newSubDet = new SubDeterminant(subShortName, subLongName, subIncreaseBehavior, subDecreaseBehavior);
+    this.subDeterminants.push(newSubDet);
   }
 }
 
-function getResultsGivenBehavior(behavior: ShiftBehaviors | undefined): ShiftResults[] | undefined {
+function getResultsGivenBehavior(behavior: ShiftBehaviors): ShiftResults[] {
   switch (behavior) {
-    case undefined:
-      return undefined;
     case ShiftBehaviors.SupplyDecrease:
       // PUp, QDown
       return [ShiftResults.PriceIncrease, ShiftResults.QuantityDecrease];
