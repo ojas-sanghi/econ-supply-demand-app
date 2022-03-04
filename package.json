@@ -67,7 +67,8 @@
     ]
   },
   "devDependencies": {
-    "@capacitor/cli": "3.4.1"
+    "@capacitor/cli": "3.4.1",
+    "@faker-js/faker": "^6.0.0-alpha.7"
   },
   "description": "An Ionic project"
 }
