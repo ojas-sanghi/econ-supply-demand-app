@@ -92,19 +92,20 @@ const HomePage: React.FC = () => (
               <IonCol>
                 {/* title */}
                 <IonRow>
-                  <IonTitle> Supply </IonTitle>
+                  <IonTitle > Supply </IonTitle>
                 </IonRow>
 
                 {/* determinant */}
                 <IonRow >
                   {/*class="ion-justify-content-between"*/}
-                  <IonCol >
-                    <IonRow>
+                  <IonCol style={{"flex-grow": 0}}>
                       <IonText> Select Determinant: </IonText>
-                      <IonSelect class="ion-align-items-stretch" value="PINET" okText="Okay" cancelText="Dismiss">
-                        <IonSelectOption value="Price of Related Goods"> Price of Related Goods </IonSelectOption>
-                      </IonSelect>
-                    </IonRow>
+                  </IonCol>
+
+                  <IonCol class="ion-align-items-stretch max-content" >
+                    <IonSelect value="PINET" okText="Okay" cancelText="Dismiss">
+                      <IonSelectOption value="Price of Related Goods"> Price of Related Goods </IonSelectOption>
+                    </IonSelect>
                   </IonCol>
                 </IonRow>
 
