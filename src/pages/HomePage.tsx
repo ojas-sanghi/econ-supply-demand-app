@@ -19,6 +19,9 @@ import { Line } from "react-chartjs-2";
 import faker from "@faker-js/faker";
 
 import "./HomePage.css";
+import { supplyDeterminants, demandDeterminants } from "../shift-calc/AllDeterminants";
+import { Determinant } from "../shift-calc/Determinant";
+import { createElement } from "react";
 
 const options = {
   responsive: true,
@@ -65,6 +68,52 @@ const data = {
   ],
 };
 
+var selectedDeterminant: Determinant;
+
+function subDeterminantOpen()
+{
+  if (selectedDeterminant)
+  {
+    if (selectedDeterminant.subDeterminants.length > 0)
+    {
+      return {selectedDeterminant.subDeterminants.map(det => (
+        <IonSelectOption value={det}> {det.shortName} </IonSelectOption>
+      ))}
+    }
+    else
+    {
+      return createElement("div", {}, "No sub-determinants");
+    }
+  }
+  else
+  {
+    return <></>;
+  }
+}
+
+function SubDeterminantDropdown()
+{
+  {/* sub-determinant */}
+  return (
+    <IonRow>
+
+    <IonCol style={{"flex-grow": "0", "white-space": "nowrap"}}>
+      <IonText> Sub-Determinant: </IonText>
+    </IonCol>
+
+    <IonCol class="ion-align-items-stretch max-content">
+      {/* TODO: do the open thing()?? */}
+      <IonSelect placeholder="Select One" interface="alert" interfaceOptions={{ header: 'Supply Determinants', subHeader: 'Select your determinant'}} mode="ios" onIonChange={e => console.log(e)} open={subDeterminantOpen()}>
+        <IonSelectOption value={selectedDeterminant?.subDeterminants[0]}> {selectedDeterminant?.subDeterminants[0].shortName} </IonSelectOption>
+        <IonSelectOption value={selectedDeterminant?.subDeterminants[1]}> {selectedDeterminant?.subDeterminants[1].shortName} </IonSelectOption>
+        {this.events.subscr}
+      </IonSelect>
+    </IonCol>
+
+    </IonRow>
+  )
+}
+
 const HomePage: React.FC = () => (
   <IonPage>
     <IonHeader>
@@ -92,31 +141,40 @@ const HomePage: React.FC = () => (
               <IonCol>
                 {/* title */}
                 <IonRow>
-                  <IonTitle > Supply </IonTitle>
+                  <IonTitle> Supply </IonTitle>
                 </IonRow>
 
                 {/* determinant */}
                 <IonRow >
-                  {/*class="ion-justify-content-between"*/}
-                  <IonCol style={{"flex-grow": 0}}>
+                  <IonCol style={{"flex-grow": "0", "white-space": "nowrap"}}>
                       <IonText> Select Determinant: </IonText>
                   </IonCol>
 
-                  <IonCol class="ion-align-items-stretch max-content" >
-                    <IonSelect value="PINET" okText="Okay" cancelText="Dismiss">
-                      <IonSelectOption value="Price of Related Goods"> Price of Related Goods </IonSelectOption>
+                  <IonCol class="ion-align-items-stretch max-content">
+                    <IonSelect placeholder="Select One" interface="alert" interfaceOptions={{ header: 'Supply Determinants', subHeader: 'Select your determinant'}} mode="ios" onIonChange={e => this.events.publish("asd")}>
+                      {supplyDeterminants.map(det => (
+                        <IonSelectOption value={det}> {det.shortName} </IonSelectOption>
+                      ))}
                     </IonSelect>
                   </IonCol>
                 </IonRow>
 
+                {/* {SubDeterminantDropdown()} */}
+                <SubDeterminantDropdown />
+
                 {/* sub-determinant */}
                 <IonRow>
-                  <IonCol>
+
+                  <IonCol style={{"flex-grow": "0", "white-space": "nowrap"}}>
                     <IonText> Sub-Determinant </IonText>
+                  </IonCol>
+
+                  <IonCol class="ion-align-items-stretch max-content">
                     <IonSelect value="PINET" okText="Okay" cancelText="Dismiss">
-                      <IonSelectOption value="Complementary"> Complementary </IonSelectOption>
+                      <IonSelectOption value="Complementary"> {selectedDeterminant?.shortName} </IonSelectOption>
                     </IonSelect>
                   </IonCol>
+
                 </IonRow>
 
                 {/* increase/decrease question */}
@@ -126,6 +184,8 @@ const HomePage: React.FC = () => (
                         <IonLabel>Biff</IonLabel>
                         <IonRadio slot="start" value="biff" />
                       </IonItem>
+                  </IonCol>
+                  <IonCol>
                       <IonItem>
                         <IonLabel>Biff</IonLabel>
                         <IonRadio slot="start" value="biff" />
@@ -135,7 +195,6 @@ const HomePage: React.FC = () => (
 
               </IonCol>
             </IonRow>
-
 
             {/* demand row */}
             <IonRow>
