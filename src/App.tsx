@@ -83,7 +83,7 @@ function TopBar() {
       <AppBar position="static">
         <Toolbar>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Test Econ React-MUI App
+            Econ Supply and Demand App
           </Typography>
         </Toolbar>
       </AppBar>

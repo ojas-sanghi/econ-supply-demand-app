@@ -5,9 +5,9 @@ on: [push]
 jobs:
   build:
     runs-on: ubuntu-latest
-    name: Deploying to surge
+    name: Build and deploy to surge.sh
     env:
-      CI: false
+      CI: false # if this isn't set, it'll treat warnings as errors and fail the build
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
