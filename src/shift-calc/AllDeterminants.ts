@@ -1,4 +1,4 @@
-import {Determinant} from './Determinant';
+import {Determinant, SubDeterminant} from './Determinant';
 import {ShiftBehaviors} from './ShiftEnums';
 
 
@@ -50,4 +50,11 @@ let demandDetO = new Determinant("Tastes/preferences", "Tastes/preferences in fa
 
 demandDeterminants = [demandDetP, demandDetI, demandDetN, demandDetE, demandDetO];
 
-export {supplyDeterminants, demandDeterminants};
+///////////////////////
+// EMPTY STUFF FOR USE IN APP.TSX
+///////////////////////
+
+let emptyDet = new Determinant("", "");
+let emptySubDet = new SubDeterminant("", "", ShiftBehaviors.DemandDecrease, ShiftBehaviors.DemandIncrease);
+
+export {supplyDeterminants, demandDeterminants, emptyDet, emptySubDet};

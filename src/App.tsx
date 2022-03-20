@@ -1,87 +1,212 @@
-import { Redirect, Route } from 'react-router-dom';
+import React, { Component, useState } from "react";
+import "./App.css";
+import "chart.js/auto";
+import { Line } from "react-chartjs-2";
+import faker from "@faker-js/faker";
 import {
-  IonApp,
-  IonIcon,
-  IonLabel,
-  IonRouterOutlet,
-  IonTabBar,
-  IonTabButton,
-  IonTabs,
-  setupIonicReact
-} from '@ionic/react';
-import { IonReactRouter } from '@ionic/react-router';
-import { ellipse, square, triangle } from 'ionicons/icons';
-import Tab1 from './pages/Tab1';
-import Tab2 from './pages/Tab2';
-import Tab3 from './pages/Tab3';
+  Box,
+  Container,
+  AppBar,
+  Toolbar,
+  Typography,
+  Grid,
+  styled,
+  Paper,
+  Divider,
+  Radio,
+  RadioGroup,
+  FormControl,
+  FormControlLabel,
+} from "@mui/material";
+import Select, { SingleValue } from "react-select";
+import { Determinant, SubDeterminant } from "./shift-calc/Determinant";
+import { supplyDeterminants, demandDeterminants, emptySubDet, emptyDet } from "./shift-calc/AllDeterminants";
 
-/* Core CSS required for Ionic components to work properly */
-import '@ionic/react/css/core.css';
+const supplyDetOptions = supplyDeterminants.map((det) => ({
+  value: det,
+  label: det.shortName,
+}));
 
-/* Basic CSS for apps built with Ionic */
-import '@ionic/react/css/normalize.css';
-import '@ionic/react/css/structure.css';
-import '@ionic/react/css/typography.css';
+const demandDetOptions = demandDeterminants.map((det) => ({
+  value: det,
+  label: det.shortName,
+}));
 
-/* Optional CSS utils that can be commented out */
-import '@ionic/react/css/padding.css';
-import '@ionic/react/css/float-elements.css';
-import '@ionic/react/css/text-alignment.css';
-import '@ionic/react/css/text-transformation.css';
-import '@ionic/react/css/flex-utils.css';
-import '@ionic/react/css/display.css';
+const Item = styled(Paper)(({ theme }) => ({
+  backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
+  ...theme.typography.body2,
+  padding: theme.spacing(1),
+  textAlign: "center",
+  color: theme.palette.text.secondary,
+}));
 
-/* Theme variables */
-import './theme/variables.css';
-import HomePage from './pages/HomePage';
+function Chart() {
+  const chartOptions = {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: "top" as const,
+      },
+      title: {
+        display: true,
+        text: "Chart.js Line Chart",
+      },
+    },
+  };
 
-setupIonicReact();
+  const labels = ["January", "February", "March", "April", "May", "June", "July"];
 
-const App: React.FC = () => (
-  <IonApp>
-    <IonReactRouter>
-      <IonTabs>
+  const data = {
+    labels,
+    datasets: [
+      {
+        label: "Dataset 1",
+        data: labels.map(() => faker.datatype.number({ min: -1000, max: 1000 })),
+        borderColor: "rgb(255, 99, 132)",
+        backgroundColor: "rgba(255, 99, 132, 0.5)",
+      },
+      {
+        label: "Dataset 2",
+        data: labels.map(() => faker.datatype.number({ min: -1000, max: 1000 })),
+        borderColor: "rgb(53, 162, 235)",
+        backgroundColor: "rgba(53, 162, 235, 0.5)",
+      },
+    ],
+  };
 
-        <IonRouterOutlet>
-          <Route exact path="/tab1">
-            <Tab1 />
-          </Route>
-          <Route exact path="/tab2">
-            <Tab2 />
-          </Route>
-          <Route path="/tab3">
-            <Tab3 />
-          </Route>
-          <Route path="/home">
-            <HomePage />
-          </Route>
-          <Route exact path="/">
-            <Redirect to="/home" />
-          </Route>
-        </IonRouterOutlet>
+  return <Line data={data} options={chartOptions} />;
+}
 
-        <IonTabBar slot="bottom">
+function TopBar() {
+  return (
+    <Box sx={{ flexGrow: 1 }}>
+      <AppBar position="static">
+        <Toolbar>
+          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+            Test Econ React-MUI App
+          </Typography>
+        </Toolbar>
+      </AppBar>
+    </Box>
+  );
+}
 
-          <IonTabButton tab="home" href="/home">
-            <IonIcon icon={triangle} />
-            <IonLabel>Home</IonLabel>
-          </IonTabButton>
+function DetChangeRadioButtons() {
+  return (
+    <FormControl>
+      <RadioGroup row>
+      <FormControlLabel value="ooo  " control={<Radio />} label="None" />
+        <FormControlLabel value="female" control={<Radio />} label="Increase" />
+        <FormControlLabel value="male" control={<Radio />} label="Decrease" />
+      </RadioGroup>
+    </FormControl>
+  );
+}
 
-          <IonTabButton tab="tab2" href="/tab2">
-            <IonIcon icon={ellipse} />
-            <IonLabel>Tab 2</IonLabel>
-          </IonTabButton>
+function App() {
+  const [selectedDeterminant, setSelectedDeterminant] = useState(emptyDet);
 
-          <IonTabButton tab="tab3" href="/tab3">
-            <IonIcon icon={square} />
-            <IonLabel>Tab 3</IonLabel>
-          </IonTabButton>
-          
-        </IonTabBar>
+  function handleDeterminantChange(determinantVal: SingleValue<{ value: Determinant; label: string }>) {
+    var det = determinantVal?.value;
 
-      </IonTabs>
-    </IonReactRouter>
-  </IonApp>
-);
+    if (det === undefined) {
+      throw new TypeError("Determinant change gave an undefined!");
+    }
+
+    setSelectedDeterminant(det);
+  }
+
+  function handleSubDeterminantChange(subDeterminantVal: SingleValue<{ value: SubDeterminant; label: string }>) {
+    console.log(subDeterminantVal);
+  }
+
+  const SubDeterminant = ({ determinant }: { determinant: Determinant }) => {
+    if (determinant.subDeterminants.length === 0) {
+      return <Select isDisabled={true} placeholder="No sub-determinants" />;
+    }
+
+    var subDetOptions = determinant.subDeterminants.map((subDet) => ({
+      value: subDet,
+      label: subDet.shortName,
+    }));
+
+    return <Select options={subDetOptions} onChange={handleSubDeterminantChange} />;
+  };
+
+  return (
+    <Container maxWidth={false} disableGutters={true}>
+      {TopBar()}
+
+      <Grid container direction="row" justifyContent="center" alignItems="center">
+        {/* Chart */}
+        <Grid item xs={6}>
+          {Chart()}
+        </Grid>
+
+        {/* SUPPLY STUFF */}
+        <Grid item xs={6}>
+
+          <Typography variant="h5" component="div" gutterBottom>
+            Supply
+          </Typography>
+
+          {/* Demand Det Row */}
+          <Grid container alignItems="center">
+            <Grid item xs={3}>
+              <Typography variant="subtitle1" gutterBottom component="div">
+                Select determinant:
+              </Typography>
+            </Grid>
+
+            <Grid item sx={{ flexGrow: 1 }}>
+              <Select options={supplyDetOptions} onChange={(e) => handleDeterminantChange(e)} />
+            </Grid>
+          </Grid>
+
+
+          <br />
+
+          {/* Supply Sub-Det Row */}
+          <Grid container alignItems="center">
+            <Grid item xs={3}>
+              <Typography variant="subtitle1" gutterBottom component="div">
+                Select sub-determinant:
+              </Typography>
+            </Grid>
+
+            <Grid item sx={{ flexGrow: 1 }}>
+              <SubDeterminant determinant={selectedDeterminant} />
+            </Grid>
+          </Grid>
+
+          <br />
+
+          {/* Supply Incerase/Decrease Row */}
+          <Grid container alignItems="center">
+            <Grid item xs={3}>
+              <Typography variant="subtitle1" gutterBottom component="div">
+                Select change:
+              </Typography>
+            </Grid>
+
+            <Grid item sx={{ flexGrow: 1 }}>
+              {DetChangeRadioButtons()}
+            </Grid>
+          </Grid>
+
+          {/* DIVIDER */}
+
+          <br />
+          <Divider />
+
+          {/* DEMAND STUFF */}
+          {/*  insert grid etc */}
+
+
+        </Grid>
+      </Grid>
+    </Container>
+  );
+}
 
 export default App;
