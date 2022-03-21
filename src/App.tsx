@@ -32,14 +32,6 @@ const demandDetOptions = demandDeterminants.map((det) => ({
   label: det.shortName,
 }));
 
-const Item = styled(Paper)(({ theme }) => ({
-  backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
-  ...theme.typography.body2,
-  padding: theme.spacing(1),
-  textAlign: "center",
-  color: theme.palette.text.secondary,
-}));
-
 function Chart() {
   const chartOptions = {
     responsive: true,
@@ -104,23 +96,50 @@ function DetChangeRadioButtons() {
 }
 
 function App() {
-  const [selectedDeterminant, setSelectedDeterminant] = useState(emptyDet);
+  const [selectedSupplyDeterminant, setSelectedSupplyDeterminant] = useState(emptyDet);
+  const [selectedDemandDeterminant, setSelectedDemandDeterminant] = useState(emptyDet);
 
-  function handleDeterminantChange(determinantVal: SingleValue<{ value: Determinant; label: string }>) {
+  var selectedSupplySubDeterminant = emptySubDet;
+  var selectedDemandSubDeterminant = emptySubDet;
+
+  // Determinant Handlers
+  function handleSupplyDeterminantChange(determinantVal: SingleValue<{ value: Determinant; label: string }>) {
     var det = determinantVal?.value;
-
     if (det === undefined) {
       throw new TypeError("Determinant change gave an undefined!");
     }
-
-    setSelectedDeterminant(det);
+    setSelectedSupplyDeterminant(det);
+  }
+  function handleDemandDeterminantChange(determinantVal: SingleValue<{ value: Determinant; label: string }>) {
+    var det = determinantVal?.value;
+    if (det === undefined) {
+      throw new TypeError("Determinant change gave an undefined!");
+    }
+    setSelectedDemandDeterminant(det);
   }
 
-  function handleSubDeterminantChange(subDeterminantVal: SingleValue<{ value: SubDeterminant; label: string }>) {
-    console.log(subDeterminantVal);
+  // SubDeterminant Handlers
+  function handleSupplySubDeterminantChange(subDeterminantVal: SingleValue<{ value: SubDeterminant; label: string }>) {
+    if (subDeterminantVal)
+      selectedSupplySubDeterminant = subDeterminantVal.value;
+  }
+  function handleDemandSubDeterminantChange(subDeterminantVal: SingleValue<{ value: SubDeterminant; label: string }>) {
+    if (subDeterminantVal)
+      selectedDemandSubDeterminant = subDeterminantVal.value;
   }
 
-  const SubDeterminant = ({ determinant }: { determinant: Determinant }) => {
+  // Both sub determinants
+  const SupplySubDeterminant = ({ determinant }: { determinant: Determinant }) => {
+    if (determinant.subDeterminants.length === 0) {
+      return <Select isDisabled={true} placeholder="No sub-determinants" />;
+    }
+    var subDetOptions = determinant.subDeterminants.map((subDet) => ({
+      value: subDet,
+      label: subDet.shortName,
+    }));
+    return <Select options={subDetOptions} onChange={handleSupplySubDeterminantChange}/>;
+  };
+  const DemandSubDeterminant = ({ determinant }: { determinant: Determinant }) => {
     if (determinant.subDeterminants.length === 0) {
       return <Select isDisabled={true} placeholder="No sub-determinants" />;
     }
@@ -130,8 +149,9 @@ function App() {
       label: subDet.shortName,
     }));
 
-    return <Select options={subDetOptions} onChange={handleSubDeterminantChange} />;
+    return <Select options={subDetOptions} onChange={handleDemandSubDeterminantChange} />;
   };
+
 
   return (
     <Container maxWidth={false} disableGutters={true}>
@@ -143,9 +163,10 @@ function App() {
           {Chart()}
         </Grid>
 
-        {/* SUPPLY STUFF */}
+        {/* Supply & Demand Column */}
         <Grid item xs={6}>
 
+          {/* SUPPLY STUFF */}
           <Typography variant="h5" component="div" gutterBottom>
             Supply
           </Typography>
@@ -159,7 +180,7 @@ function App() {
             </Grid>
 
             <Grid item sx={{ flexGrow: 1 }}>
-              <Select options={supplyDetOptions} onChange={(e) => handleDeterminantChange(e)} />
+              <Select options={supplyDetOptions} onChange={(e) => handleSupplyDeterminantChange(e)} />
             </Grid>
           </Grid>
 
@@ -175,7 +196,7 @@ function App() {
             </Grid>
 
             <Grid item sx={{ flexGrow: 1 }}>
-              <SubDeterminant determinant={selectedDeterminant} />
+              <SupplySubDeterminant determinant={selectedSupplyDeterminant} />
             </Grid>
           </Grid>
 
@@ -200,9 +221,53 @@ function App() {
           <Divider />
 
           {/* DEMAND STUFF */}
-          {/*  insert grid etc */}
+          <Typography variant="h5" component="div" gutterBottom>
+            Demand
+          </Typography>
+
+          {/* Demand Det Row */}
+          <Grid container alignItems="center">
+            <Grid item xs={3}>
+              <Typography variant="subtitle1" gutterBottom component="div">
+                Select determinant:
+              </Typography>
+            </Grid>
+
+            <Grid item sx={{ flexGrow: 1 }}>
+              <Select options={demandDetOptions} onChange={(e) => handleDemandDeterminantChange(e)} />
+            </Grid>
+          </Grid>
 
 
+          <br />
+
+          {/* Demand Sub-Det Row */}
+          <Grid container alignItems="center">
+            <Grid item xs={3}>
+              <Typography variant="subtitle1" gutterBottom component="div">
+                Select sub-determinant:
+              </Typography>
+            </Grid>
+
+            <Grid item sx={{ flexGrow: 1 }}>
+              <DemandSubDeterminant determinant={selectedDemandDeterminant} />
+            </Grid>
+          </Grid>
+
+          <br />
+
+          {/* Demand Incerase/Decrease Row */}
+          <Grid container alignItems="center">
+            <Grid item xs={3}>
+              <Typography variant="subtitle1" gutterBottom component="div">
+                Select change:
+              </Typography>
+            </Grid>
+
+            <Grid item sx={{ flexGrow: 1 }}>
+              {DetChangeRadioButtons()}
+            </Grid>
+          </Grid>
         </Grid>
       </Grid>
     </Container>
