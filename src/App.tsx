@@ -167,14 +167,14 @@ function App() {
         <Grid item xs={6}>
 
           {/* SUPPLY STUFF */}
-          <Typography variant="h5" component="div" gutterBottom>
+          <Typography variant="h5" component="div" >
             Supply
           </Typography>
 
           {/* Demand Det Row */}
           <Grid container alignItems="center">
             <Grid item xs={3}>
-              <Typography variant="subtitle1" gutterBottom component="div">
+              <Typography variant="subtitle1" component="div">
                 Select determinant:
               </Typography>
             </Grid>
@@ -190,7 +190,7 @@ function App() {
           {/* Supply Sub-Det Row */}
           <Grid container alignItems="center">
             <Grid item xs={3}>
-              <Typography variant="subtitle1" gutterBottom component="div">
+              <Typography variant="subtitle1" component="div">
                 Select sub-determinant:
               </Typography>
             </Grid>
@@ -205,7 +205,7 @@ function App() {
           {/* Supply Incerase/Decrease Row */}
           <Grid container alignItems="center">
             <Grid item xs={3}>
-              <Typography variant="subtitle1" gutterBottom component="div">
+              <Typography variant="subtitle1" component="div">
                 Select change:
               </Typography>
             </Grid>
@@ -221,14 +221,14 @@ function App() {
           <Divider />
 
           {/* DEMAND STUFF */}
-          <Typography variant="h5" component="div" gutterBottom>
+          <Typography variant="h5" component="div">
             Demand
           </Typography>
 
           {/* Demand Det Row */}
           <Grid container alignItems="center">
             <Grid item xs={3}>
-              <Typography variant="subtitle1" gutterBottom component="div">
+              <Typography variant="subtitle1" component="div">
                 Select determinant:
               </Typography>
             </Grid>
@@ -244,7 +244,7 @@ function App() {
           {/* Demand Sub-Det Row */}
           <Grid container alignItems="center">
             <Grid item xs={3}>
-              <Typography variant="subtitle1" gutterBottom component="div">
+              <Typography variant="subtitle1" component="div">
                 Select sub-determinant:
               </Typography>
             </Grid>
@@ -259,7 +259,7 @@ function App() {
           {/* Demand Incerase/Decrease Row */}
           <Grid container alignItems="center">
             <Grid item xs={3}>
-              <Typography variant="subtitle1" gutterBottom component="div">
+              <Typography variant="subtitle1" component="div">
                 Select change:
               </Typography>
             </Grid>
