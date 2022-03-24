@@ -83,11 +83,89 @@ function TopBar() {
   );
 }
 
+function SupplySubDet({ det }: { det: Determinant })
+{
+  const [selectedSupplySubDeterminant, setSelectedSupplySubDeterminant] = useState(emptySubDet);
+  
+  function handleSupplySubDeterminantChange(subDeterminantVal: SingleValue<{ value: SubDeterminant; label: string }>) {
+    if (subDeterminantVal) setSelectedSupplySubDeterminant(subDeterminantVal.value);
+  }
+
+  const SupplySubDeterminant = ({
+    determinant,
+  }: // onChange,
+  {
+    determinant: Determinant;
+    // onChange: (subDeterminantVal: SingleValue<{ value: SubDeterminant; label: string }>) => void;
+  }) => {
+    if (determinant.subDeterminants.length === 0) {
+      return (
+        <Select
+          isDisabled={true}
+          placeholder="No sub-determinants"
+          value={{ value: emptySubDet, label: "No sub-determinants" }}
+        />
+      );
+    }
+    var subDetOptions = determinant.subDeterminants.map((subDet) => ({
+      value: subDet,
+      label: subDet.shortName,
+    }));
+    return (
+      <Select
+        options={subDetOptions}
+        onChange={handleSupplySubDeterminantChange}
+        value={{ value: selectedSupplySubDeterminant, label: selectedSupplySubDeterminant.shortName }}
+      />
+    );
+  };
+  // return SupplySubDeterminant(det);
+  return <SupplySubDeterminant determinant={det}/>;
+}
+
+function DemandSubDet({ determinant }: { determinant: Determinant }) 
+{
+  const [selectedDemandSubDeterminant, setSelectedDemandSubDeterminant] = useState(emptySubDet);
+
+  // SubDeterminant Handlers
+  function handleDemandSubDeterminantChange(subDeterminantVal: SingleValue<{ value: SubDeterminant; label: string }>) {
+    if (subDeterminantVal) setSelectedDemandSubDeterminant(subDeterminantVal.value);
+  }
+
+  // Both sub determinants
+  const DemandSubDeterminant = ({ determinant }: { determinant: Determinant }) => {
+    if (determinant.subDeterminants.length === 0) {
+      return (
+        <Select
+          isDisabled={true}
+          placeholder="No sub-determinants"
+          value={{ value: emptySubDet, label: "No sub-determinants" }}
+        />
+      );
+    }
+
+    var subDetOptions = determinant.subDeterminants.map((subDet) => ({
+      value: subDet,
+      label: subDet.shortName,
+    }));
+
+    return (
+      <Select
+        options={subDetOptions}
+        onChange={handleDemandSubDeterminantChange}
+        value={{ value: selectedDemandSubDeterminant, label: selectedDemandSubDeterminant.shortName }}
+      />
+    );
+  };
+  // return DemandSubDeterminant(determinant);
+  return <DemandSubDeterminant determinant={determinant}/>;
+}
+
 function DetChangeRadioButtons() {
   return (
     <FormControl>
       <RadioGroup row>
-      <FormControlLabel value="ooo  " control={<Radio />} label="None" />
+        <FormControlLabel value="ooo  " control={<Radio />} label="None" />
         <FormControlLabel value="female" control={<Radio />} label="Increase" />
         <FormControlLabel value="male" control={<Radio />} label="Decrease" />
       </RadioGroup>
@@ -98,9 +176,6 @@ function DetChangeRadioButtons() {
 function App() {
   const [selectedSupplyDeterminant, setSelectedSupplyDeterminant] = useState(emptyDet);
   const [selectedDemandDeterminant, setSelectedDemandDeterminant] = useState(emptyDet);
-
-  var selectedSupplySubDeterminant = emptySubDet;
-  var selectedDemandSubDeterminant = emptySubDet;
 
   // Determinant Handlers
   function handleSupplyDeterminantChange(determinantVal: SingleValue<{ value: Determinant; label: string }>) {
@@ -118,41 +193,6 @@ function App() {
     setSelectedDemandDeterminant(det);
   }
 
-  // SubDeterminant Handlers
-  function handleSupplySubDeterminantChange(subDeterminantVal: SingleValue<{ value: SubDeterminant; label: string }>) {
-    if (subDeterminantVal)
-      selectedSupplySubDeterminant = subDeterminantVal.value;
-  }
-  function handleDemandSubDeterminantChange(subDeterminantVal: SingleValue<{ value: SubDeterminant; label: string }>) {
-    if (subDeterminantVal)
-      selectedDemandSubDeterminant = subDeterminantVal.value;
-  }
-
-  // Both sub determinants
-  const SupplySubDeterminant = ({ determinant }: { determinant: Determinant }) => {
-    if (determinant.subDeterminants.length === 0) {
-      return <Select isDisabled={true} placeholder="No sub-determinants" />;
-    }
-    var subDetOptions = determinant.subDeterminants.map((subDet) => ({
-      value: subDet,
-      label: subDet.shortName,
-    }));
-    return <Select options={subDetOptions} onChange={handleSupplySubDeterminantChange}/>;
-  };
-  const DemandSubDeterminant = ({ determinant }: { determinant: Determinant }) => {
-    if (determinant.subDeterminants.length === 0) {
-      return <Select isDisabled={true} placeholder="No sub-determinants" />;
-    }
-
-    var subDetOptions = determinant.subDeterminants.map((subDet) => ({
-      value: subDet,
-      label: subDet.shortName,
-    }));
-
-    return <Select options={subDetOptions} onChange={handleDemandSubDeterminantChange} />;
-  };
-
-
   return (
     <Container maxWidth={false} disableGutters={true}>
       {TopBar()}
@@ -165,9 +205,8 @@ function App() {
 
         {/* Supply & Demand Column */}
         <Grid item xs={6}>
-
           {/* SUPPLY STUFF */}
-          <Typography variant="h5" component="div" >
+          <Typography variant="h5" component="div">
             Supply
           </Typography>
 
@@ -184,7 +223,6 @@ function App() {
             </Grid>
           </Grid>
 
-
           <br />
 
           {/* Supply Sub-Det Row */}
@@ -196,7 +234,7 @@ function App() {
             </Grid>
 
             <Grid item sx={{ flexGrow: 1 }}>
-              <SupplySubDeterminant determinant={selectedSupplyDeterminant} />
+              <SupplySubDet det={selectedSupplyDeterminant} />
             </Grid>
           </Grid>
 
@@ -238,7 +276,6 @@ function App() {
             </Grid>
           </Grid>
 
-
           <br />
 
           {/* Demand Sub-Det Row */}
@@ -250,7 +287,7 @@ function App() {
             </Grid>
 
             <Grid item sx={{ flexGrow: 1 }}>
-              <DemandSubDeterminant determinant={selectedDemandDeterminant} />
+              <DemandSubDet determinant={selectedDemandDeterminant} />
             </Grid>
           </Grid>
 
