@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { SyntheticEvent, useState } from "react";
 import "./App.css";
 import "chart.js/auto";
 import { Line } from "react-chartjs-2";
@@ -82,45 +82,14 @@ function TopBar() {
 }
 
 // Both sub determinants
-const SupplySubDeterminant = ({
+const SubDeterminantSelect = ({
   determinant,
   onChange,
-  selectedSupplySubDeterminant,
+  selectedSubDeterminant,
 }: {
   determinant: Determinant;
   onChange: (subDeterminantVal: SingleValue<{ value: SubDeterminant; label: string }>) => void;
-  selectedSupplySubDeterminant: SubDeterminant;
-}) => {
-  if (determinant.subDeterminants.length === 0) {
-    return (
-      <Select
-        isDisabled={true}
-        placeholder="No sub-determinants"
-        value={{ value: emptySubDet, label: "No sub-determinants" }}
-      />
-    );
-  }
-  var subDetOptions = determinant.subDeterminants.map((subDet) => ({
-    value: subDet,
-    label: subDet.shortName,
-  }));
-  return (
-    <Select
-      options={subDetOptions}
-      onChange={onChange}
-      value={{ value: selectedSupplySubDeterminant, label: selectedSupplySubDeterminant.shortName }}
-    />
-  );
-};
-
-const DemandSubDeterminant = ({
-  determinant,
-  onChange,
-  selectedDemandSubDeterminant,
-}: {
-  determinant: Determinant;
-  onChange: (subDeterminantVal: SingleValue<{ value: SubDeterminant; label: string }>) => void;
-  selectedDemandSubDeterminant: SubDeterminant;
+  selectedSubDeterminant: SubDeterminant;
 }) => {
   if (determinant.subDeterminants.length === 0) {
     return (
@@ -141,18 +110,22 @@ const DemandSubDeterminant = ({
     <Select
       options={subDetOptions}
       onChange={onChange}
-      value={{ value: selectedDemandSubDeterminant, label: selectedDemandSubDeterminant.shortName }}
+      value={{ value: selectedSubDeterminant, label: selectedSubDeterminant.shortName }}
     />
   );
 };
 
-function DetChangeRadioButtons() {
+const DetChangeRadioButtons = ({
+  onChange
+} : {
+  onChange: (behavior: React.SyntheticEvent<Element, Event>) => void;
+}) => {
   return (
     <FormControl>
       <RadioGroup row>
-        <FormControlLabel value="ooo  " control={<Radio />} label="None" />
-        <FormControlLabel value="female" control={<Radio />} label="Increase" />
-        <FormControlLabel value="male" control={<Radio />} label="Decrease" />
+        <FormControlLabel value="ooo  " control={<Radio />} label="None" onChange={onChange} />
+        <FormControlLabel value="female" control={<Radio />} label="Increase" onChange={onChange} />
+        <FormControlLabel value="male" control={<Radio />} label="Decrease" onChange={onChange} />
       </RadioGroup>
     </FormControl>
   );
@@ -164,6 +137,9 @@ function App() {
 
   const [selectedSupplySubDeterminant, setSelectedSupplySubDeterminant] = useState(emptySubDet);
   const [selectedDemandSubDeterminant, setSelectedDemandSubDeterminant] = useState(emptySubDet);
+
+  const [supplyRadioChange, setSupplyRadioChange] = useState("");
+  const [demandRadioChange, setDemandRadioChange] = useState("");
 
   // Determinant Handlers
   function handleSupplyDeterminantChange(determinantVal: SingleValue<{ value: Determinant; label: string }>) {
@@ -189,6 +165,14 @@ function App() {
   }
   function handleDemandSubDeterminantChange(subDeterminantVal: SingleValue<{ value: SubDeterminant; label: string }>) {
     if (subDeterminantVal) setSelectedDemandSubDeterminant(subDeterminantVal.value);
+  }
+
+  // Radio button handlers
+  function handleSupplyRadioChange(change: any) {
+    setSupplyRadioChange(change.target.value);
+  }
+  function handleDemandRadioChange(change: any) {
+    setDemandRadioChange(change.target.value);
   }
 
   return (
@@ -232,7 +216,7 @@ function App() {
             </Grid>
 
             <Grid item sx={{ flexGrow: 1 }}>
-              <SupplySubDeterminant determinant={selectedSupplyDeterminant} onChange={handleSupplySubDeterminantChange} selectedSupplySubDeterminant={selectedSupplySubDeterminant} />
+              <SubDeterminantSelect determinant={selectedSupplyDeterminant} onChange={handleSupplySubDeterminantChange} selectedSubDeterminant={selectedSupplySubDeterminant} />
             </Grid>
           </Grid>
 
@@ -247,7 +231,7 @@ function App() {
             </Grid>
 
             <Grid item sx={{ flexGrow: 1 }}>
-              {DetChangeRadioButtons()}
+              <DetChangeRadioButtons onChange={(e) => handleSupplyRadioChange(e)} />
             </Grid>
           </Grid>
 
@@ -285,7 +269,7 @@ function App() {
             </Grid>
 
             <Grid item sx={{ flexGrow: 1 }}>
-              <DemandSubDeterminant determinant={selectedDemandDeterminant} onChange={handleDemandSubDeterminantChange} selectedDemandSubDeterminant={selectedDemandSubDeterminant} />
+              <SubDeterminantSelect determinant={selectedDemandDeterminant} onChange={handleDemandSubDeterminantChange} selectedSubDeterminant={selectedDemandSubDeterminant} />
             </Grid>
           </Grid>
 
@@ -300,7 +284,7 @@ function App() {
             </Grid>
 
             <Grid item sx={{ flexGrow: 1 }}>
-              {DetChangeRadioButtons()}
+              <DetChangeRadioButtons onChange={(e): void => handleDemandRadioChange(e)} />
             </Grid>
           </Grid>
         </Grid>
