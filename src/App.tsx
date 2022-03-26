@@ -19,6 +19,7 @@ import {
 import Select, { SingleValue } from "react-select";
 import { Determinant, SubDeterminant } from "./shift-calc/Determinant";
 import { supplyDeterminants, demandDeterminants, emptySubDet, emptyDet } from "./shift-calc/AllDeterminants";
+import { ShiftChange } from "./shift-calc/ShiftEnums";
 
 const supplyDetOptions = supplyDeterminants.map((det) => ({
   value: det,
@@ -39,7 +40,7 @@ function Chart() {
       },
       title: {
         display: true,
-        text: "Chart.js Line Chart",
+        text: "Supply and Demand",
       },
     },
   };
@@ -95,6 +96,7 @@ const SubDeterminantSelect = ({
     return (
       <Select
         isDisabled={true}
+        isSearchable={false}
         placeholder="No sub-determinants"
         value={{ value: emptySubDet, label: "No sub-determinants" }}
       />
@@ -108,6 +110,7 @@ const SubDeterminantSelect = ({
 
   return (
     <Select
+      isSearchable={false}
       options={subDetOptions}
       onChange={onChange}
       value={{ value: selectedSubDeterminant, label: selectedSubDeterminant.shortName }}
@@ -123,9 +126,9 @@ const DetChangeRadioButtons = ({
   return (
     <FormControl>
       <RadioGroup row>
-        <FormControlLabel value="ooo  " control={<Radio />} label="None" onChange={onChange} />
-        <FormControlLabel value="female" control={<Radio />} label="Increase" onChange={onChange} />
-        <FormControlLabel value="male" control={<Radio />} label="Decrease" onChange={onChange} />
+        <FormControlLabel value={ShiftChange.None} control={<Radio />} label="None" onChange={onChange} />
+        <FormControlLabel value={ShiftChange.Increase} control={<Radio />} label="Increase" onChange={onChange} />
+        <FormControlLabel value={ShiftChange.Decrease} control={<Radio />} label="Decrease" onChange={onChange} />
       </RadioGroup>
     </FormControl>
   );
@@ -201,7 +204,7 @@ function App() {
             </Grid>
 
             <Grid item sx={{ flexGrow: 1 }}>
-              <Select options={supplyDetOptions} onChange={(e) => handleSupplyDeterminantChange(e)} />
+              <Select isSearchable={false} options={supplyDetOptions} onChange={(e) => handleSupplyDeterminantChange(e)} />
             </Grid>
           </Grid>
 
@@ -254,7 +257,7 @@ function App() {
             </Grid>
 
             <Grid item sx={{ flexGrow: 1 }}>
-              <Select options={demandDetOptions} onChange={(e) => handleDemandDeterminantChange(e)} />
+              <Select isSearchable={false} options={demandDetOptions} onChange={(e) => handleDemandDeterminantChange(e)} />
             </Grid>
           </Grid>
 

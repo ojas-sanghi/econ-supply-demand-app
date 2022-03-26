@@ -20,6 +20,7 @@ export enum ShiftResults {
 }
 
 export enum ShiftChange {
+  None,
   Increase,
   Decrease
 }
