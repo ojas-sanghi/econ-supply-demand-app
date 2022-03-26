@@ -1,6 +1,7 @@
 import React, { SyntheticEvent, useState } from "react";
 import "./App.css";
 import "chart.js/auto";
+import { Chart } from "chart.js";
 import { Line } from "react-chartjs-2";
 import faker from "@faker-js/faker";
 import {
@@ -31,7 +32,17 @@ const demandDetOptions = demandDeterminants.map((det) => ({
   label: det.shortName,
 }));
 
-function Chart() {
+function Graph() {
+  Chart.defaults.elements.point.radius = 0;
+  // Chart.defaults.scales['x'].title = "Quantity";
+  // Chart.defaults.scales.linear.title.display = true;
+  // Chart.defaults.scales.linear.title.text = "test title!";
+  Chart.defaults.scales.linear.title = { display: true, align: 'center', text: "Supply and Demand Graph", color: "666", font: {family: 'Helvetica', size: 12, style: 'normal', weight: null, lineHeight: 1.2} , padding: 4};
+  Chart.defaults.scales.linear.axis = 'x';
+  Chart.defaults.scales.linear. title = { display: true, align: 'center', text: "waaaaaaaaa", color: "666", font: {family: 'Helvetica', size: 12, style: 'normal', weight: null, lineHeight: 1.2} , padding: 4};
+  // Chart.defaults.scales.linear.title.display = true;  
+  // Chart.defaults.scales.linear.title.text = "woah test title";
+
   const chartOptions = {
     responsive: true,
     plugins: {
@@ -40,24 +51,24 @@ function Chart() {
       },
       title: {
         display: true,
-        text: "Supply and Demand",
+        text: "Supply and Demand Graph asdasd ",
       },
     },
   };
 
-  const labels = ["January", "February", "March", "April", "May", "June", "July"];
+  const labels = ["", ""];
 
   const data = {
     labels,
     datasets: [
       {
-        label: "Dataset 1",
+        label: "Supply",
         data: labels.map(() => faker.datatype.number({ min: -1000, max: 1000 })),
         borderColor: "rgb(255, 99, 132)",
         backgroundColor: "rgba(255, 99, 132, 0.5)",
       },
       {
-        label: "Dataset 2",
+        label: "Demand",
         data: labels.map(() => faker.datatype.number({ min: -1000, max: 1000 })),
         borderColor: "rgb(53, 162, 235)",
         backgroundColor: "rgba(53, 162, 235, 0.5)",
@@ -119,8 +130,8 @@ const SubDeterminantSelect = ({
 };
 
 const DetChangeRadioButtons = ({
-  onChange
-} : {
+  onChange,
+}: {
   onChange: (behavior: React.SyntheticEvent<Element, Event>) => void;
 }) => {
   return (
@@ -132,7 +143,7 @@ const DetChangeRadioButtons = ({
       </RadioGroup>
     </FormControl>
   );
-}
+};
 
 function App() {
   const [selectedSupplyDeterminant, setSelectedSupplyDeterminant] = useState(emptyDet);
@@ -185,7 +196,7 @@ function App() {
       <Grid container direction="row" justifyContent="center" alignItems="center">
         {/* Chart */}
         <Grid item xs={6}>
-          {Chart()}
+          <Graph />
         </Grid>
 
         {/* Supply & Demand Column */}
@@ -204,7 +215,11 @@ function App() {
             </Grid>
 
             <Grid item sx={{ flexGrow: 1 }}>
-              <Select isSearchable={false} options={supplyDetOptions} onChange={(e) => handleSupplyDeterminantChange(e)} />
+              <Select
+                isSearchable={false}
+                options={supplyDetOptions}
+                onChange={(e) => handleSupplyDeterminantChange(e)}
+              />
             </Grid>
           </Grid>
 
@@ -219,7 +234,11 @@ function App() {
             </Grid>
 
             <Grid item sx={{ flexGrow: 1 }}>
-              <SubDeterminantSelect determinant={selectedSupplyDeterminant} onChange={handleSupplySubDeterminantChange} selectedSubDeterminant={selectedSupplySubDeterminant} />
+              <SubDeterminantSelect
+                determinant={selectedSupplyDeterminant}
+                onChange={handleSupplySubDeterminantChange}
+                selectedSubDeterminant={selectedSupplySubDeterminant}
+              />
             </Grid>
           </Grid>
 
@@ -257,7 +276,11 @@ function App() {
             </Grid>
 
             <Grid item sx={{ flexGrow: 1 }}>
-              <Select isSearchable={false} options={demandDetOptions} onChange={(e) => handleDemandDeterminantChange(e)} />
+              <Select
+                isSearchable={false}
+                options={demandDetOptions}
+                onChange={(e) => handleDemandDeterminantChange(e)}
+              />
             </Grid>
           </Grid>
 
@@ -272,7 +295,11 @@ function App() {
             </Grid>
 
             <Grid item sx={{ flexGrow: 1 }}>
-              <SubDeterminantSelect determinant={selectedDemandDeterminant} onChange={handleDemandSubDeterminantChange} selectedSubDeterminant={selectedDemandSubDeterminant} />
+              <SubDeterminantSelect
+                determinant={selectedDemandDeterminant}
+                onChange={handleDemandSubDeterminantChange}
+                selectedSubDeterminant={selectedDemandSubDeterminant}
+              />
             </Grid>
           </Grid>
 
