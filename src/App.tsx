@@ -38,22 +38,48 @@ const demandDetOptions = demandDeterminants.map((det) => ({
 }));
 
 function Graph() {
-  const data = [
+  const defaultData = [
     {
-      name: "Start",
+      x: 0,
       supply: 0,
+      // supplyIncrease: 0,
       demand: 1000,
     },
+    // TODO: PLOT NULL VALUES!!
     {
-      name: "Equilibrium",
-      supply: 500,
-      demand: 500,
+      x: 1,
+      // supply: 500,
+      supplyIncrease: 0,
+      // demand: 500,
     },
     {
-      name: "End",
+      x: 2,
+      // supply: 500,
+      // demand: 500,
+    },
+    {
+      x: 3,
+      // supply: 750,
+      supplyIncrease: 500,
+      // demand: 250,
+    },
+    {
+      x: 4,
       supply: 1000,
       demand: 0,
     },
+    {
+      x: 5,
+      supplyIncrease: 1000,
+    }
+  ];
+
+  const supplyIncreaseData = [
+    {
+      name: "Equilibrium",
+      supply: 700,
+      demand: 500,
+    }
   ];
 
   return (
@@ -61,20 +87,23 @@ function Graph() {
       <LineChart 
         width={500}
         height={400}
-        data={data}
+        data={defaultData}
       >
-        {/* <CartesianGrid stroke="#f5f5f5" vertical={false}/> */}
-        <XAxis dataKey="name" tick={false} label={{ value: "Quantity Q", position: "insideCenter", offset: 0 }} />
+        <XAxis dataKey="x" allowDecimals={false} allowDataOverflow={true} domain={[0, 4]} type="number" tickCount={5} tick={true} label={{ value: "Quantity Q", position: "insideCenter", offset: 0 }} />
+
         <YAxis tick={false} label={{ value: "Price P", angle: -90, position: "insideCenter" }} />
+        {/* <YAxis yAxisId="supplyIncrease" tick={false} label={{ value: "Price P", angle: -90, position: "insideCenter" }} /> */}
 
         <Legend align='center' verticalAlign='top' iconType='rect' />
 
-        <ReferenceLine stroke="black" strokeDasharray="4" segment={[{ x: 'Equilibrium', y: 0 }, { x: 'Equilibrium', y: 500 }]} />
-        <ReferenceLine stroke="black" strokeDasharray="4" segment={[{ x: 'Start', y: 500 }, { x: 'Equilibrium', y: 500 }]} />
-        <Line type="monotone" dataKey="supply" stroke="#ff6384" dot={false} activeDot={false} strokeWidth={5} />
-        <Line type="monotone" dataKey="demand" stroke="#35a2eb" dot={false} activeDot={false} strokeWidth={5} />
+        <ReferenceLine stroke="black" strokeDasharray="4" segment={[{ x: 2, y: 0 }, { x: 2, y: 500 }]} />
+        <ReferenceLine stroke="black" strokeDasharray="4" segment={[{ x: 0, y: 500 }, { x: 2, y: 500 }]} />
+        <Line connectNulls type="monotone" dataKey="supply" stroke="#ff6384" dot={false} activeDot={false} strokeWidth={5} />
+        <Line connectNulls type="monotone" dataKey="demand" stroke="#35a2eb" dot={false} activeDot={false} strokeWidth={5} />
+        <Line connectNulls type="monotone" dataKey="supplyIncrease" stroke="#35234b" dot={false} activeDot={false} strokeWidth={5} />
         
       </LineChart >
+
     </ResponsiveContainer>
   );
   
