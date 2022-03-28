@@ -1,9 +1,14 @@
 import React, { SyntheticEvent, useState } from "react";
 import "./App.css";
-import "chart.js/auto";
-import { Chart } from "chart.js";
-import { Line } from "react-chartjs-2";
-import faker from "@faker-js/faker";
+import {
+  LineChart ,
+  Line,
+  XAxis,
+  YAxis,
+  ResponsiveContainer,
+  Legend,
+  ReferenceLine,
+} from "recharts";
 import {
   Box,
   Container,
@@ -33,50 +38,46 @@ const demandDetOptions = demandDeterminants.map((det) => ({
 }));
 
 function Graph() {
-  Chart.defaults.elements.point.radius = 0;
-  // Chart.defaults.scales['x'].title = "Quantity";
-  // Chart.defaults.scales.linear.title.display = true;
-  // Chart.defaults.scales.linear.title.text = "test title!";
-  Chart.defaults.scales.linear.title = { display: true, align: 'center', text: "Supply and Demand Graph", color: "666", font: {family: 'Helvetica', size: 12, style: 'normal', weight: null, lineHeight: 1.2} , padding: 4};
-  Chart.defaults.scales.linear.axis = 'x';
-  Chart.defaults.scales.linear. title = { display: true, align: 'center', text: "waaaaaaaaa", color: "666", font: {family: 'Helvetica', size: 12, style: 'normal', weight: null, lineHeight: 1.2} , padding: 4};
-  // Chart.defaults.scales.linear.title.display = true;  
-  // Chart.defaults.scales.linear.title.text = "woah test title";
-
-  const chartOptions = {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: "top" as const,
-      },
-      title: {
-        display: true,
-        text: "Supply and Demand Graph asdasd ",
-      },
+  const data = [
+    {
+      name: "Start",
+      supply: 0,
+      demand: 1000,
     },
-  };
+    {
+      name: "Equilibrium",
+      supply: 500,
+      demand: 500,
+    },
+    {
+      name: "End",
+      supply: 1000,
+      demand: 0,
+    },
+  ];
 
-  const labels = ["", ""];
+  return (
+    <ResponsiveContainer width="90%" aspect={1.5}>
+      <LineChart 
+        width={500}
+        height={400}
+        data={data}
+      >
+        {/* <CartesianGrid stroke="#f5f5f5" vertical={false}/> */}
+        <XAxis dataKey="name" tick={false} label={{ value: "Quantity Q", position: "insideCenter", offset: 0 }} />
+        <YAxis tick={false} label={{ value: "Price P", angle: -90, position: "insideCenter" }} />
 
-  const data = {
-    labels,
-    datasets: [
-      {
-        label: "Supply",
-        data: labels.map(() => faker.datatype.number({ min: -1000, max: 1000 })),
-        borderColor: "rgb(255, 99, 132)",
-        backgroundColor: "rgba(255, 99, 132, 0.5)",
-      },
-      {
-        label: "Demand",
-        data: labels.map(() => faker.datatype.number({ min: -1000, max: 1000 })),
-        borderColor: "rgb(53, 162, 235)",
-        backgroundColor: "rgba(53, 162, 235, 0.5)",
-      },
-    ],
-  };
+        <Legend align='center' verticalAlign='top' iconType='rect' />
 
-  return <Line data={data} options={chartOptions} />;
+        <ReferenceLine stroke="black" strokeDasharray="4" segment={[{ x: 'Equilibrium', y: 0 }, { x: 'Equilibrium', y: 500 }]} />
+        <ReferenceLine stroke="black" strokeDasharray="4" segment={[{ x: 'Start', y: 500 }, { x: 'Equilibrium', y: 500 }]} />
+        <Line type="monotone" dataKey="supply" stroke="#ff6384" dot={false} activeDot={false} strokeWidth={5} />
+        <Line type="monotone" dataKey="demand" stroke="#35a2eb" dot={false} activeDot={false} strokeWidth={5} />
+        
+      </LineChart >
+    </ResponsiveContainer>
+  );
+  
 }
 
 function TopBar() {
