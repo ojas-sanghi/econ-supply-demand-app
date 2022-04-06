@@ -1,4 +1,4 @@
-import React, { SyntheticEvent, useState } from "react";
+import React, { useState } from "react";
 import "./App.css";
 import {
   LineChart ,
@@ -25,7 +25,7 @@ import {
 import Select, { SingleValue } from "react-select";
 import { Determinant, SubDeterminant } from "./shift-calc/Determinant";
 import { supplyDeterminants, demandDeterminants, emptySubDet, emptyDet } from "./shift-calc/AllDeterminants";
-import { ShiftChange } from "./shift-calc/ShiftEnums";
+import { ShiftChange, ShiftBehaviors } from "./shift-calc/ShiftEnums";
 
 const supplyDetOptions = supplyDeterminants.map((det) => ({
   value: det,
@@ -37,31 +37,29 @@ const demandDetOptions = demandDeterminants.map((det) => ({
   label: det.shortName,
 }));
 
+var shiftBehavior: ShiftBehaviors;
+
 function Graph() {
   const defaultData = [
     {
       x: 0,
       supply: 0,
-      // supplyIncrease: 0,
       demand: 1000,
+      quantityDecrease: 250,
+      priceDecrease: 750,
     },
-    // TODO: PLOT NULL VALUES!!
     {
       x: 1,
-      // supply: 500,
-      supplyIncrease: 0,
-      // demand: 500,
+      priceIncrease: 1000,
+      quantityIncrease: 0,
     },
     {
       x: 2,
-      // supply: 500,
-      // demand: 500,
     },
     {
       x: 3,
-      // supply: 750,
-      supplyIncrease: 500,
-      // demand: 250,
+      quantityDecrease: 1000,
+      priceDecrease: 0,
     },
     {
       x: 4,
@@ -70,17 +68,13 @@ function Graph() {
     },
     {
       x: 5,
-      supplyIncrease: 1000,
+      priceIncrease: 0,
+      quantityIncrease: 1000,
     }
   ];
 
-  const supplyIncreaseData = [
-    {
-      name: "Equilibrium",
-      supply: 700,
-      demand: 500,
-    }
-  ];
+  console.log("called again!!");
+
 
   return (
     <ResponsiveContainer width="90%" aspect={1.5}>
@@ -89,10 +83,10 @@ function Graph() {
         height={400}
         data={defaultData}
       >
-        <XAxis dataKey="x" allowDecimals={false} allowDataOverflow={true} domain={[0, 4]} type="number" tickCount={5} tick={true} label={{ value: "Quantity Q", position: "insideCenter", offset: 0 }} />
+        <XAxis dataKey="x" allowDecimals={false} allowDataOverflow={true} domain={[0, 4]} type="number" tickCount={5} tick={false} label={{ value: "Quantity Q", position: "insideCenter", offset: 0 }} />
 
         <YAxis tick={false} label={{ value: "Price P", angle: -90, position: "insideCenter" }} />
-        {/* <YAxis yAxisId="supplyIncrease" tick={false} label={{ value: "Price P", angle: -90, position: "insideCenter" }} /> */}
+        {/* <YAxis yAxisId="quantityIncrease" tick={false} label={{ value: "Price P", angle: -90, position: "insideCenter" }} /> */}
 
         <Legend align='center' verticalAlign='top' iconType='rect' />
 
@@ -100,7 +94,10 @@ function Graph() {
         <ReferenceLine stroke="black" strokeDasharray="4" segment={[{ x: 0, y: 500 }, { x: 2, y: 500 }]} />
         <Line connectNulls type="monotone" dataKey="supply" stroke="#ff6384" dot={false} activeDot={false} strokeWidth={5} />
         <Line connectNulls type="monotone" dataKey="demand" stroke="#35a2eb" dot={false} activeDot={false} strokeWidth={5} />
-        <Line connectNulls type="monotone" dataKey="supplyIncrease" stroke="#35234b" dot={false} activeDot={false} strokeWidth={5} />
+        <Line connectNulls type="monotone" dataKey="quantityIncrease" stroke="#35234b" dot={false} activeDot={false} strokeWidth={5} />
+        <Line connectNulls type="monotone" dataKey="quantityDecrease" stroke="#35234b" dot={false} activeDot={false} strokeWidth={5} />
+        <Line connectNulls type="monotone" dataKey="priceIncrease" stroke="#35234b" dot={false} activeDot={false} strokeWidth={5} />
+        <Line connectNulls type="monotone" dataKey="priceDecrease" stroke="#35234b" dot={false} activeDot={false} strokeWidth={5} />
         
       </LineChart >
 
