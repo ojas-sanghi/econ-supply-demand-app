@@ -1,5 +1,5 @@
 import {Determinant, SubDeterminant} from './Determinant';
-import {ShiftBehaviors} from './ShiftEnums';
+import {ShiftBehaviors, ShiftChange} from './ShiftEnums';
 
 
 ///////////////////////
@@ -56,5 +56,114 @@ demandDeterminants = [demandDetP, demandDetI, demandDetN, demandDetE, demandDetO
 
 let emptyDet = new Determinant("", "");
 let emptySubDet = new SubDeterminant("", "", ShiftBehaviors.DemandDecrease, ShiftBehaviors.DemandIncrease);
+
+////////////////////////////////////
+
+export function getBehaviorGivenShifts(supplyDet: Determinant, supplySubDet: SubDeterminant, demandDet: Determinant, demandSubDet: SubDeterminant, supplyChange: ShiftChange, demandChange: ShiftChange): ShiftBehaviors | undefined
+{
+  console.log("called")
+  console.log(supplyDet);
+  console.log(supplySubDet);
+  console.log(demandDet);
+  console.log(demandSubDet);
+  console.log(supplyChange);
+  console.log(demandChange);
+
+
+  var isSupplyChange = false;
+  var isDemandChange = false;
+
+  var supplyBehavior: ShiftBehaviors | undefined;
+  var demandBehavior: ShiftBehaviors | undefined;
+
+  if (supplyDet.shortName != "")
+  {
+    isSupplyChange = true;
+    if (supplyDet.subDeterminants.length == 0)
+    {
+      if (supplyChange == ShiftChange.Increase)
+      {
+        supplyBehavior = supplyDet.increaseBehavior;
+      }
+      else if (supplyChange == ShiftChange.Decrease)
+      {
+        supplyBehavior = supplyDet.decreaseBehavior;
+      }
+    }
+    else
+    {
+      if (supplyChange == ShiftChange.Increase)
+      {
+        supplyBehavior = supplySubDet.increaseBehavior;
+      }
+      else if (supplyChange == ShiftChange.Decrease)
+      {
+        supplyBehavior = supplySubDet.decreaseBehavior;
+      }
+    }
+  }
+  else
+  {
+    isSupplyChange = false;
+  }
+
+  if (demandDet.shortName != "")
+  {
+    isDemandChange = true;
+    if (demandDet.subDeterminants.length == 0)
+    {
+      if (demandChange == ShiftChange.Increase)
+      {
+        demandBehavior = demandDet.increaseBehavior;
+      }
+      else if (demandChange == ShiftChange.Decrease)
+      {
+        demandBehavior = demandDet.decreaseBehavior;
+      }
+    }
+    else
+    {
+      if (demandChange == ShiftChange.Increase)
+      {
+        demandBehavior = demandSubDet.increaseBehavior;
+      }
+      else if (demandChange == ShiftChange.Decrease)
+      {
+        demandBehavior = demandSubDet.decreaseBehavior;
+      }
+    }
+  }
+
+  if (isSupplyChange && !isDemandChange)
+  {
+    return supplyBehavior;
+  }
+  else if (!isSupplyChange && isDemandChange)
+  {
+    return demandBehavior;
+  }
+  else
+  {
+    if (supplyBehavior == ShiftBehaviors.SupplyIncrease && demandBehavior == ShiftBehaviors.DemandIncrease)
+    {
+      return ShiftBehaviors.DoubleDemandIncreaseSupplyIncrease;
+    }
+    if (supplyBehavior == ShiftBehaviors.SupplyIncrease && demandBehavior == ShiftBehaviors.DemandDecrease)
+    {
+      return ShiftBehaviors.DoubleDemandDecreaseSupplyIncrease;
+    }
+
+    if (supplyBehavior == ShiftBehaviors.SupplyDecrease && demandBehavior == ShiftBehaviors.DemandIncrease)
+    {
+      return ShiftBehaviors.DoubleDemandIncreaseSupplyDecrease;
+    }
+    if (supplyBehavior == ShiftBehaviors.SupplyDecrease && demandBehavior == ShiftBehaviors.DemandDecrease)
+    {
+      return ShiftBehaviors.DoubleDemandDecreaseSupplyDecrease;
+    }
+  }
+
+  return undefined;
+}
 
 export {supplyDeterminants, demandDeterminants, emptyDet, emptySubDet};

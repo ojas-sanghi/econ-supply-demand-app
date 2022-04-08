@@ -59,29 +59,30 @@ export class Determinant
 
 function getResultsGivenBehavior(behavior: ShiftBehaviors): ShiftResults[] {
   switch (behavior) {
+    // PUp, QDown
     case ShiftBehaviors.SupplyDecrease:
-      // PUp, QDown
       return [ShiftResults.PriceIncrease, ShiftResults.QuantityDecrease];
-    case ShiftBehaviors.SupplyIncrease:
       // PDown, QUp
+    case ShiftBehaviors.SupplyIncrease:
       return [ShiftResults.PriceDecrease, ShiftResults.QuantityIncrease];
-    case ShiftBehaviors.DemandDecrease:
       // PDown, QDown
+    case ShiftBehaviors.DemandDecrease:
       return [ShiftResults.PriceDecrease, ShiftResults.QuantityDecrease];
-    case ShiftBehaviors.DemandIncrease:
       // PUp, QUp
+    case ShiftBehaviors.DemandIncrease:
       return [ShiftResults.PriceIncrease, ShiftResults.QuantityIncrease];
-    case ShiftBehaviors.DoubleDemandDecreaseSupplyDecrease:
+
       // P?, QDown
+    case ShiftBehaviors.DoubleDemandDecreaseSupplyDecrease:
       return [ShiftResults.PriceUnsure, ShiftResults.QuantityDecrease];
-    case ShiftBehaviors.DoubleDemandDecreaseSupplyIncrease:
       // PDown, Q?
+    case ShiftBehaviors.DoubleDemandDecreaseSupplyIncrease:
       return [ShiftResults.PriceDecrease, ShiftResults.QuantityUnsure];
-    case ShiftBehaviors.DoubleDemandIncreaseSupplyDecrease:
       // PUp, Q?
+    case ShiftBehaviors.DoubleDemandIncreaseSupplyDecrease:
       return [ShiftResults.PriceIncrease, ShiftResults.QuantityUnsure];
-    case ShiftBehaviors.DoubleDemandIncreaseSupplyIncrease:
       // P?, QUp
+    case ShiftBehaviors.DoubleDemandIncreaseSupplyIncrease:
       return [ShiftResults.PriceUnsure, ShiftResults.QuantityIncrease];
   }
 }

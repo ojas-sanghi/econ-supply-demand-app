@@ -24,7 +24,7 @@ import {
 } from "@mui/material";
 import Select, { SingleValue } from "react-select";
 import { Determinant, SubDeterminant } from "./shift-calc/Determinant";
-import { supplyDeterminants, demandDeterminants, emptySubDet, emptyDet } from "./shift-calc/AllDeterminants";
+import { supplyDeterminants, demandDeterminants, emptySubDet, emptyDet, getBehaviorGivenShifts } from "./shift-calc/AllDeterminants";
 import { ShiftChange, ShiftBehaviors } from "./shift-calc/ShiftEnums";
 
 const supplyDetOptions = supplyDeterminants.map((det) => ({
@@ -37,7 +37,17 @@ const demandDetOptions = demandDeterminants.map((det) => ({
   label: det.shortName,
 }));
 
-var shiftBehavior: ShiftBehaviors;
+var shiftBehavior: ShiftBehaviors | undefined;
+
+// TODO:
+// make sure single shifts work when one is set and the other is set to none
+// draw reference lines
+// display doubel shifts
+
+const supplyIncreaseLine = <Line connectNulls type="monotone" dataKey="supplyIncrease" stroke="#35234b" dot={false} activeDot={false} strokeWidth={5} />
+const supplyDecreaseLine = <Line connectNulls type="monotone" dataKey="supplyDecrease" stroke="#35234b" dot={false} activeDot={false} strokeWidth={5} />
+const demandIncreaseLine = <Line connectNulls type="monotone" dataKey="demandIncrease" stroke="#35234b" dot={false} activeDot={false} strokeWidth={5} />
+const demandDecreaseLine = <Line connectNulls type="monotone" dataKey="demandDecrease" stroke="#35234b" dot={false} activeDot={false} strokeWidth={5} />
 
 function Graph() {
   const defaultData = [
@@ -45,21 +55,21 @@ function Graph() {
       x: 0,
       supply: 0,
       demand: 1000,
-      quantityDecrease: 250,
-      priceDecrease: 750,
+      supplyDecrease: 250,
+      demandDecrease: 750,
     },
     {
       x: 1,
-      priceIncrease: 1000,
-      quantityIncrease: 0,
+      demandIncrease: 1000,
+      supplyIncrease: 0,
     },
     {
       x: 2,
     },
     {
       x: 3,
-      quantityDecrease: 1000,
-      priceDecrease: 0,
+      supplyDecrease: 1000,
+      demandDecrease: 0,
     },
     {
       x: 4,
@@ -68,13 +78,10 @@ function Graph() {
     },
     {
       x: 5,
-      priceIncrease: 0,
-      quantityIncrease: 1000,
+      demandIncrease: 0,
+      supplyIncrease: 1000,
     }
   ];
-
-  console.log("called again!!");
-
 
   return (
     <ResponsiveContainer width="90%" aspect={1.5}>
@@ -86,7 +93,6 @@ function Graph() {
         <XAxis dataKey="x" allowDecimals={false} allowDataOverflow={true} domain={[0, 4]} type="number" tickCount={5} tick={false} label={{ value: "Quantity Q", position: "insideCenter", offset: 0 }} />
 
         <YAxis tick={false} label={{ value: "Price P", angle: -90, position: "insideCenter" }} />
-        {/* <YAxis yAxisId="quantityIncrease" tick={false} label={{ value: "Price P", angle: -90, position: "insideCenter" }} /> */}
 
         <Legend align='center' verticalAlign='top' iconType='rect' />
 
@@ -94,11 +100,12 @@ function Graph() {
         <ReferenceLine stroke="black" strokeDasharray="4" segment={[{ x: 0, y: 500 }, { x: 2, y: 500 }]} />
         <Line connectNulls type="monotone" dataKey="supply" stroke="#ff6384" dot={false} activeDot={false} strokeWidth={5} />
         <Line connectNulls type="monotone" dataKey="demand" stroke="#35a2eb" dot={false} activeDot={false} strokeWidth={5} />
-        <Line connectNulls type="monotone" dataKey="quantityIncrease" stroke="#35234b" dot={false} activeDot={false} strokeWidth={5} />
-        <Line connectNulls type="monotone" dataKey="quantityDecrease" stroke="#35234b" dot={false} activeDot={false} strokeWidth={5} />
-        <Line connectNulls type="monotone" dataKey="priceIncrease" stroke="#35234b" dot={false} activeDot={false} strokeWidth={5} />
-        <Line connectNulls type="monotone" dataKey="priceDecrease" stroke="#35234b" dot={false} activeDot={false} strokeWidth={5} />
-        
+
+        {shiftBehavior == ShiftBehaviors.SupplyIncrease && (<> {supplyIncreaseLine} </>)}
+        {shiftBehavior == ShiftBehaviors.SupplyDecrease && (<> {supplyDecreaseLine} </>)}
+        {shiftBehavior == ShiftBehaviors.DemandIncrease && (<> {demandIncreaseLine} </>)}
+        {shiftBehavior == ShiftBehaviors.DemandDecrease && (<> {demandDecreaseLine} </>)}
+
       </LineChart >
 
     </ResponsiveContainer>
@@ -165,8 +172,8 @@ const DetChangeRadioButtons = ({
     <FormControl>
       <RadioGroup row>
         <FormControlLabel value={ShiftChange.None} control={<Radio />} label="None" onChange={onChange} />
-        <FormControlLabel value={ShiftChange.Increase} control={<Radio />} label="Increase" onChange={onChange} />
         <FormControlLabel value={ShiftChange.Decrease} control={<Radio />} label="Decrease" onChange={onChange} />
+        <FormControlLabel value={ShiftChange.Increase} control={<Radio />} label="Increase" onChange={onChange} />
       </RadioGroup>
     </FormControl>
   );
@@ -179,8 +186,15 @@ function App() {
   const [selectedSupplySubDeterminant, setSelectedSupplySubDeterminant] = useState(emptySubDet);
   const [selectedDemandSubDeterminant, setSelectedDemandSubDeterminant] = useState(emptySubDet);
 
-  const [supplyRadioChange, setSupplyRadioChange] = useState("");
-  const [demandRadioChange, setDemandRadioChange] = useState("");
+  const [supplyRadioChange, setSupplyRadioChange] = useState(ShiftChange.None);
+  const [demandRadioChange, setDemandRadioChange] = useState(ShiftChange.None);
+
+  shiftBehavior = getBehaviorGivenShifts(selectedSupplyDeterminant, selectedSupplySubDeterminant, selectedDemandDeterminant, selectedDemandSubDeterminant, supplyRadioChange, demandRadioChange);
+  console.log(shiftBehavior);
+  if (shiftBehavior != undefined)
+  {
+    console.log(ShiftBehaviors[shiftBehavior]);
+  }
 
   // Determinant Handlers
   function handleSupplyDeterminantChange(determinantVal: SingleValue<{ value: Determinant; label: string }>) {
@@ -210,10 +224,10 @@ function App() {
 
   // Radio button handlers
   function handleSupplyRadioChange(change: any) {
-    setSupplyRadioChange(change.target.value);
+    setSupplyRadioChange(change.target.value);  
   }
   function handleDemandRadioChange(change: any) {
-    setDemandRadioChange(change.target.value);
+    setDemandRadioChange(change.target.value);  
   }
 
   return (
