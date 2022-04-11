@@ -1,14 +1,6 @@
 import React, { useState } from "react";
 import "./App.css";
-import {
-  LineChart ,
-  Line,
-  XAxis,
-  YAxis,
-  ResponsiveContainer,
-  Legend,
-  ReferenceLine,
-} from "recharts";
+import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, Legend, ReferenceLine } from "recharts";
 import {
   Box,
   Container,
@@ -24,7 +16,13 @@ import {
 } from "@mui/material";
 import Select, { SingleValue } from "react-select";
 import { Determinant, SubDeterminant } from "./shift-calc/Determinant";
-import { supplyDeterminants, demandDeterminants, emptySubDet, emptyDet, getBehaviorGivenShifts } from "./shift-calc/AllDeterminants";
+import {
+  supplyDeterminants,
+  demandDeterminants,
+  emptySubDet,
+  emptyDet,
+  getBehaviorGivenShifts,
+} from "./shift-calc/AllDeterminants";
 import { ShiftChange, ShiftBehaviors } from "./shift-calc/ShiftEnums";
 
 const supplyDetOptions = supplyDeterminants.map((det) => ({
@@ -40,14 +38,314 @@ const demandDetOptions = demandDeterminants.map((det) => ({
 var shiftBehavior: ShiftBehaviors | undefined;
 
 // TODO:
-// make sure single shifts work when one is set and the other is set to none
-// draw reference lines
-// display doubel shifts
+// if it requires a subdet then don't liet choose increase/decrease without that 
+/// either check the logic so it doesnt do anything
+/// or disable all but the "none" radio button
 
-const supplyIncreaseLine = <Line connectNulls type="monotone" dataKey="supplyIncrease" stroke="#35234b" dot={false} activeDot={false} strokeWidth={5} />
-const supplyDecreaseLine = <Line connectNulls type="monotone" dataKey="supplyDecrease" stroke="#35234b" dot={false} activeDot={false} strokeWidth={5} />
-const demandIncreaseLine = <Line connectNulls type="monotone" dataKey="demandIncrease" stroke="#35234b" dot={false} activeDot={false} strokeWidth={5} />
-const demandDecreaseLine = <Line connectNulls type="monotone" dataKey="demandDecrease" stroke="#35234b" dot={false} activeDot={false} strokeWidth={5} />
+// also display the type of shift (demand icnrease, decrease, duble demand icnrese etc) at the bottom
+// plus a price increase and quantity ddecease thing
+
+// change the legend names
+
+const supplyIncreaseLine = (
+  <>
+    <ReferenceLine
+      stroke="black"
+      strokeDasharray="8"
+      strokeWidth={2}
+      segment={[
+        { x: 2.5, y: 0 },
+        { x: 2.5, y: 375 },
+      ]}
+    />
+    <ReferenceLine
+      stroke="black"
+      strokeDasharray="8"
+      strokeWidth={2}
+      segment={[
+        { x: 0, y: 375 },
+        { x: 2.5, y: 375 },
+      ]}
+    />
+
+    <Line
+      connectNulls
+      type="monotone"
+      dataKey="supplyIncrease"
+      stroke="#750000"
+      dot={false}
+      activeDot={false}
+      strokeWidth={5}
+    />
+  </>
+);
+const supplyDecreaseLine = (
+  <>
+    <ReferenceLine
+      stroke="black"
+      strokeDasharray="8"
+      strokeWidth={2}
+      segment={[
+        { x: 1.5, y: 0 },
+        { x: 1.5, y: 625 },
+      ]}
+    />
+    <ReferenceLine
+      stroke="black"
+      strokeDasharray="8"
+      strokeWidth={2}
+      segment={[
+        { x: 0, y: 625 },
+        { x: 1.5, y: 625 },
+      ]}
+    />
+
+    <Line
+      connectNulls
+      type="monotone"
+      dataKey="supplyDecrease"
+      stroke="#750000"
+      dot={false}
+      activeDot={false}
+      strokeWidth={5}
+    />
+  </>
+);
+const demandIncreaseLine = (
+  <>
+    <ReferenceLine
+      stroke="black"
+      strokeDasharray="8"
+      strokeWidth={2}
+      segment={[
+        { x: 2.5, y: 0 },
+        { x: 2.5, y: 625 },
+      ]}
+    />
+    <ReferenceLine
+      stroke="black"
+      strokeDasharray="8"
+      strokeWidth={2}
+      segment={[
+        { x: 0, y: 625 },
+        { x: 2.5, y: 625 },
+      ]}
+    />
+
+    <Line
+      connectNulls
+      type="monotone"
+      dataKey="demandIncrease"
+      stroke="#000080"
+      dot={false}
+      activeDot={false}
+      strokeWidth={5}
+    />
+  </>
+);
+const demandDecreaseLine = (
+  <>
+    <ReferenceLine
+      stroke="black"
+      strokeDasharray="8"
+      strokeWidth={2}
+      segment={[
+        { x: 1.5, y: 0 },
+        { x: 1.5, y: 375 },
+      ]}
+    />
+    <ReferenceLine
+      stroke="black"
+      strokeDasharray="8"
+      strokeWidth={2}
+      segment={[
+        { x: 0, y: 375 },
+        { x: 1.5, y: 375 },
+      ]}
+    />
+
+    <Line
+      connectNulls
+      type="monotone"
+      dataKey="demandDecrease"
+      stroke="#000080"
+      dot={false}
+      activeDot={false}
+      strokeWidth={5}
+    />
+  </>
+);
+
+const doubleDemandDecreaseSupplyDecreaseLine = (
+  <>
+    <ReferenceLine
+      stroke="black"
+      strokeDasharray="8"
+      strokeWidth={2}
+      segment={[
+        { x: 1, y: 0 },
+        { x: 1, y: 500 },
+      ]}
+    />
+    <ReferenceLine
+      stroke="black"
+      strokeDasharray="8"
+      strokeWidth={2}
+      segment={[
+        { x: 0, y: 500 },
+        { x: 1, y: 500 },
+      ]}
+    />
+
+    <Line
+      connectNulls
+      name="supply 2"
+      type="monotone"
+      dataKey="doubleDemandDecreaseSupplyDecreaseSupply"
+      stroke="#BB0000"
+      dot={false}
+      activeDot={false}
+      strokeWidth={5}
+    />
+    <Line
+      connectNulls
+      name="demand 2"
+      type="monotone"
+      dataKey="doubleDemandDecreaseSupplyDecreaseDemand"
+      stroke="#000080"
+      dot={false}
+      activeDot={false}
+      strokeWidth={5}
+    />
+  </>
+);
+const doubleDemandDecreaseSupplyIncreaseLine = (
+  <>
+    <ReferenceLine
+      stroke="black"
+      strokeDasharray="8"
+      strokeWidth={2}
+      segment={[
+        { x: 2, y: 0 },
+        { x: 2, y: 250 },
+      ]}
+    />
+    <ReferenceLine
+      stroke="black"
+      strokeDasharray="8"
+      strokeWidth={2}
+      segment={[
+        { x: 0, y: 250 },
+        { x: 2, y: 250 },
+      ]}
+    />
+
+    <Line
+      connectNulls
+      name="supply 2"
+      type="monotone"
+      dataKey="doubleDemandDecreaseSupplyIncreaseSupply"
+      stroke="#BB0000"
+      dot={false}
+      activeDot={false}
+      strokeWidth={5}
+    />
+    <Line
+      connectNulls
+      name="demand 2"
+      type="monotone"
+      dataKey="doubleDemandDecreaseSupplyIncreaseDemand"
+      stroke="#000080"
+      dot={false}
+      activeDot={false}
+      strokeWidth={5}
+    />
+  </>
+);
+const doubleDemandIncreaseSupplyDecreaseLine = (
+  <>
+    <ReferenceLine
+      stroke="black"
+      strokeDasharray="8"
+      strokeWidth={2}
+      segment={[
+        { x: 3.022, y: 0 },
+        { x: 3.022, y: 500 },
+      ]}
+    />
+    <ReferenceLine
+      stroke="black"
+      strokeDasharray="8"
+      strokeWidth={2}
+      segment={[
+        { x: 2, y: 500 },
+        { x: 3.022, y: 500 },
+      ]}
+    />
+    <Line
+      connectNulls
+      name="supply 2"
+      type="monotone"
+      dataKey="doubleDemandIncreaseSupplyDecreaseSupply"
+      stroke="#BB0000"
+      dot={false}
+      activeDot={false}
+      strokeWidth={5}
+    />
+    <Line
+      connectNulls
+      name="demand 2"
+      type="monotone"
+      dataKey="doubleDemandIncreaseSupplyDecreaseDemand"
+      stroke="#000080"
+      dot={false}
+      activeDot={false}
+      strokeWidth={5}
+    />
+  </>
+);
+const doubleDemandIncreaseSupplyIncreaseLine = (
+  <>
+    <ReferenceLine
+      stroke="black"
+      strokeDasharray="8"
+      strokeWidth={2}
+      segment={[
+        { x: 2, y: 500 },
+        { x: 2, y: 750 },
+      ]}
+    />
+    <ReferenceLine
+      stroke="black"
+      strokeDasharray="8"
+      strokeWidth={2}
+      segment={[
+        { x: 0, y: 750 },
+        { x: 2, y: 750 },
+      ]}
+    />
+    <Line
+      connectNulls
+      name="supply 2"
+      type="monotone"
+      dataKey="doubleDemandIncreaseSupplyIncreaseSupply"
+      stroke="#BB0000"
+      dot={false}
+      activeDot={false}
+      strokeWidth={5}
+    />
+    <Line
+      connectNulls
+      name="demand 2"
+      type="monotone"
+      dataKey="doubleDemandIncreaseSupplyIncreaseDemand"
+      stroke="#000080"
+      dot={false}
+      activeDot={false}
+      strokeWidth={5}
+    />
+  </>
+);
 
 function Graph() {
   const defaultData = [
@@ -57,19 +355,53 @@ function Graph() {
       demand: 1000,
       supplyDecrease: 250,
       demandDecrease: 750,
+
+      doubleDemandDecreaseSupplyDecreaseDemand: 750,
+      doubleDemandDecreaseSupplyDecreaseSupply: 250,
+
+      doubleDemandDecreaseSupplyIncreaseDemand: 750,
+
+      doubleDemandIncreaseSupplyIncreaseSupply: 250,
     },
     {
       x: 1,
       demandIncrease: 1000,
       supplyIncrease: 0,
+
+      doubleDemandDecreaseSupplyDecreaseSupply: 500,
+
+      doubleDemandDecreaseSupplyIncreaseSupply: 0,
+
+      doubleDemandIncreaseSupplyDecreaseSupply: 0,
+      doubleDemandIncreaseSupplyDecreaseDemand: 1000,
+
+      doubleDemandIncreaseSupplyIncreaseDemand: 1000,
     },
     {
       x: 2,
+
+      doubleDemandDecreaseSupplyIncreaseSupply: 250,
+      doubleDemandDecreaseSupplyIncreaseDemand: 250,
+
+      doubleDemandIncreaseSupplyDecreaseSupply: 250,
+      doubleDemandIncreaseSupplyDecreaseDemand: 750,
+
+      doubleDemandIncreaseSupplyIncreaseSupply: 750,
+      doubleDemandIncreaseSupplyIncreaseDemand: 750,
     },
     {
       x: 3,
       supplyDecrease: 1000,
       demandDecrease: 0,
+
+      doubleDemandDecreaseSupplyDecreaseDemand: 0,
+      doubleDemandDecreaseSupplyDecreaseSupply: 1000,
+
+      doubleDemandDecreaseSupplyIncreaseDemand: 0,
+
+      doubleDemandIncreaseSupplyDecreaseSupply: 500,
+
+      doubleDemandIncreaseSupplyIncreaseSupply: 1000,
     },
     {
       x: 4,
@@ -80,37 +412,89 @@ function Graph() {
       x: 5,
       demandIncrease: 0,
       supplyIncrease: 1000,
-    }
+
+      doubleDemandDecreaseSupplyIncreaseSupply: 1000,
+
+      doubleDemandIncreaseSupplyDecreaseSupply: 1000,
+
+      doubleDemandIncreaseSupplyDecreaseDemand: 50,
+      doubleDemandIncreaseSupplyIncreaseDemand: 50,
+    },
   ];
 
   return (
     <ResponsiveContainer width="90%" aspect={1.5}>
-      <LineChart 
-        width={500}
-        height={400}
-        data={defaultData}
-      >
-        <XAxis dataKey="x" allowDecimals={false} allowDataOverflow={true} domain={[0, 4]} type="number" tickCount={5} tick={false} label={{ value: "Quantity Q", position: "insideCenter", offset: 0 }} />
+      <LineChart width={500} height={400} data={defaultData}>
+        <XAxis
+          dataKey="x"
+          allowDecimals={false}
+          allowDataOverflow={true}
+          domain={[0, 4]}
+          type="number"
+          tickCount={5}
+          tick={false}
+          label={{ value: "Quantity Q", position: "insideCenter", offset: 0 }}
+        />
 
         <YAxis tick={false} label={{ value: "Price P", angle: -90, position: "insideCenter" }} />
 
-        <Legend align='center' verticalAlign='top' iconType='rect' />
+        <Legend align="center" verticalAlign="top" iconType="rect" />
 
-        <ReferenceLine stroke="black" strokeDasharray="4" segment={[{ x: 2, y: 0 }, { x: 2, y: 500 }]} />
-        <ReferenceLine stroke="black" strokeDasharray="4" segment={[{ x: 0, y: 500 }, { x: 2, y: 500 }]} />
-        <Line connectNulls type="monotone" dataKey="supply" stroke="#ff6384" dot={false} activeDot={false} strokeWidth={5} />
-        <Line connectNulls type="monotone" dataKey="demand" stroke="#35a2eb" dot={false} activeDot={false} strokeWidth={5} />
+        <ReferenceLine
+          stroke="black"
+          strokeDasharray="4"
+          segment={[
+            { x: 2, y: 0 },
+            { x: 2, y: 500 },
+          ]}
+        />
+        <ReferenceLine
+          stroke="black"
+          strokeDasharray="4"
+          segment={[
+            { x: 0, y: 500 },
+            { x: 2, y: 500 },
+          ]}
+        />
+        <Line
+          connectNulls
+          type="monotone"
+          dataKey="supply"
+          stroke="#ff6384"
+          dot={false}
+          activeDot={false}
+          strokeWidth={5}
+        />
+        <Line
+          connectNulls
+          type="monotone"
+          dataKey="demand"
+          stroke="#35a2eb"
+          dot={false}
+          activeDot={false}
+          strokeWidth={5}
+        />
 
-        {shiftBehavior == ShiftBehaviors.SupplyIncrease && (<> {supplyIncreaseLine} </>)}
-        {shiftBehavior == ShiftBehaviors.SupplyDecrease && (<> {supplyDecreaseLine} </>)}
-        {shiftBehavior == ShiftBehaviors.DemandIncrease && (<> {demandIncreaseLine} </>)}
-        {shiftBehavior == ShiftBehaviors.DemandDecrease && (<> {demandDecreaseLine} </>)}
+        {shiftBehavior == ShiftBehaviors.SupplyIncrease && <> {supplyIncreaseLine} </>}
+        {shiftBehavior == ShiftBehaviors.SupplyDecrease && <> {supplyDecreaseLine} </>}
+        {shiftBehavior == ShiftBehaviors.DemandIncrease && <> {demandIncreaseLine} </>}
+        {shiftBehavior == ShiftBehaviors.DemandDecrease && <> {demandDecreaseLine} </>}
 
-      </LineChart >
-
+        {shiftBehavior == ShiftBehaviors.DoubleDemandDecreaseSupplyDecrease && (
+          <> {doubleDemandDecreaseSupplyDecreaseLine} </>
+        )}
+        {shiftBehavior == ShiftBehaviors.DoubleDemandDecreaseSupplyIncrease && (
+          <> {doubleDemandDecreaseSupplyIncreaseLine} </>
+        )}
+        {shiftBehavior == ShiftBehaviors.DoubleDemandIncreaseSupplyDecrease && (
+          <> {doubleDemandIncreaseSupplyDecreaseLine} </>
+        )}
+        {shiftBehavior == ShiftBehaviors.DoubleDemandIncreaseSupplyIncrease && (
+          <> {doubleDemandIncreaseSupplyIncreaseLine} </>
+        )}
+      </LineChart>
     </ResponsiveContainer>
   );
-  
 }
 
 function TopBar() {
@@ -189,10 +573,15 @@ function App() {
   const [supplyRadioChange, setSupplyRadioChange] = useState(ShiftChange.None);
   const [demandRadioChange, setDemandRadioChange] = useState(ShiftChange.None);
 
-  shiftBehavior = getBehaviorGivenShifts(selectedSupplyDeterminant, selectedSupplySubDeterminant, selectedDemandDeterminant, selectedDemandSubDeterminant, supplyRadioChange, demandRadioChange);
-  console.log(shiftBehavior);
-  if (shiftBehavior != undefined)
-  {
+  shiftBehavior = getBehaviorGivenShifts(
+    selectedSupplyDeterminant,
+    selectedSupplySubDeterminant,
+    selectedDemandDeterminant,
+    selectedDemandSubDeterminant,
+    supplyRadioChange,
+    demandRadioChange
+  );
+  if (shiftBehavior != undefined) {
     console.log(ShiftBehaviors[shiftBehavior]);
   }
 
@@ -224,10 +613,10 @@ function App() {
 
   // Radio button handlers
   function handleSupplyRadioChange(change: any) {
-    setSupplyRadioChange(change.target.value);  
+    setSupplyRadioChange(change.target.value);
   }
   function handleDemandRadioChange(change: any) {
-    setDemandRadioChange(change.target.value);  
+    setDemandRadioChange(change.target.value);
   }
 
   return (

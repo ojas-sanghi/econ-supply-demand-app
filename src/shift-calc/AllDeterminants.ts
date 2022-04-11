@@ -61,22 +61,13 @@ let emptySubDet = new SubDeterminant("", "", ShiftBehaviors.DemandDecrease, Shif
 
 export function getBehaviorGivenShifts(supplyDet: Determinant, supplySubDet: SubDeterminant, demandDet: Determinant, demandSubDet: SubDeterminant, supplyChange: ShiftChange, demandChange: ShiftChange): ShiftBehaviors | undefined
 {
-  console.log("called")
-  console.log(supplyDet);
-  console.log(supplySubDet);
-  console.log(demandDet);
-  console.log(demandSubDet);
-  console.log(supplyChange);
-  console.log(demandChange);
-
-
   var isSupplyChange = false;
   var isDemandChange = false;
 
   var supplyBehavior: ShiftBehaviors | undefined;
   var demandBehavior: ShiftBehaviors | undefined;
 
-  if (supplyDet.shortName != "")
+  if (supplyDet.shortName != "" && supplyChange != ShiftChange.None)
   {
     isSupplyChange = true;
     if (supplyDet.subDeterminants.length == 0)
@@ -107,7 +98,7 @@ export function getBehaviorGivenShifts(supplyDet: Determinant, supplySubDet: Sub
     isSupplyChange = false;
   }
 
-  if (demandDet.shortName != "")
+  if (demandDet.shortName != ""  && demandChange != ShiftChange.None)
   {
     isDemandChange = true;
     if (demandDet.subDeterminants.length == 0)
