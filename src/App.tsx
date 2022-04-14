@@ -14,6 +14,8 @@ import {
   FormControl,
   FormControlLabel,
 } from "@mui/material";
+import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
+import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import Select, { SingleValue } from "react-select";
 import { Determinant, SubDeterminant } from "./shift-calc/Determinant";
 import {
@@ -38,14 +40,8 @@ const demandDetOptions = demandDeterminants.map((det) => ({
 var shiftBehavior: ShiftBehaviors | undefined;
 
 // TODO:
-// if it requires a subdet then don't liet choose increase/decrease without that 
-/// either check the logic so it doesnt do anything
-/// or disable all but the "none" radio button
-
 // also display the type of shift (demand icnrease, decrease, duble demand icnrese etc) at the bottom
 // plus a price increase and quantity ddecease thing
-
-// change the legend names
 
 const supplyIncreaseLine = (
   <>
@@ -70,6 +66,7 @@ const supplyIncreaseLine = (
 
     <Line
       connectNulls
+      name="supply 2"
       type="monotone"
       dataKey="supplyIncrease"
       stroke="#750000"
@@ -102,6 +99,7 @@ const supplyDecreaseLine = (
 
     <Line
       connectNulls
+      name="supply 2"
       type="monotone"
       dataKey="supplyDecrease"
       stroke="#750000"
@@ -134,6 +132,7 @@ const demandIncreaseLine = (
 
     <Line
       connectNulls
+      name="demand 2"
       type="monotone"
       dataKey="demandIncrease"
       stroke="#000080"
@@ -166,6 +165,7 @@ const demandDecreaseLine = (
 
     <Line
       connectNulls
+      name="demand 2"
       type="monotone"
       dataKey="demandDecrease"
       stroke="#000080"
@@ -361,7 +361,7 @@ function Graph() {
 
       doubleDemandDecreaseSupplyIncreaseDemand: 750,
 
-      doubleDemandIncreaseSupplyIncreaseSupply: 250,
+      doubleDemandIncreaseSupplyDecreaseSupply: 250,
     },
     {
       x: 1,
@@ -372,10 +372,11 @@ function Graph() {
 
       doubleDemandDecreaseSupplyIncreaseSupply: 0,
 
-      doubleDemandIncreaseSupplyDecreaseSupply: 0,
       doubleDemandIncreaseSupplyDecreaseDemand: 1000,
 
       doubleDemandIncreaseSupplyIncreaseDemand: 1000,
+
+      doubleDemandIncreaseSupplyIncreaseSupply: 0,
     },
     {
       x: 2,
@@ -383,10 +384,8 @@ function Graph() {
       doubleDemandDecreaseSupplyIncreaseSupply: 250,
       doubleDemandDecreaseSupplyIncreaseDemand: 250,
 
-      doubleDemandIncreaseSupplyDecreaseSupply: 250,
       doubleDemandIncreaseSupplyDecreaseDemand: 750,
 
-      doubleDemandIncreaseSupplyIncreaseSupply: 750,
       doubleDemandIncreaseSupplyIncreaseDemand: 750,
     },
     {
@@ -399,9 +398,7 @@ function Graph() {
 
       doubleDemandDecreaseSupplyIncreaseDemand: 0,
 
-      doubleDemandIncreaseSupplyDecreaseSupply: 500,
-
-      doubleDemandIncreaseSupplyIncreaseSupply: 1000,
+      doubleDemandIncreaseSupplyDecreaseSupply: 1000,
     },
     {
       x: 4,
@@ -415,7 +412,7 @@ function Graph() {
 
       doubleDemandDecreaseSupplyIncreaseSupply: 1000,
 
-      doubleDemandIncreaseSupplyDecreaseSupply: 1000,
+      doubleDemandIncreaseSupplyIncreaseSupply: 1000,
 
       doubleDemandIncreaseSupplyDecreaseDemand: 50,
       doubleDemandIncreaseSupplyIncreaseDemand: 50,
@@ -563,6 +560,29 @@ const DetChangeRadioButtons = ({
   );
 };
 
+function getPrettyShiftBehavior(shift: ShiftBehaviors | undefined) {
+  switch (shift) {
+    case ShiftBehaviors.SupplyIncrease:
+      return "Supply Increase";
+    case ShiftBehaviors.SupplyDecrease:
+      return "Supply Decrease";
+    case ShiftBehaviors.DemandIncrease:
+      return "Demand Increase";
+    case ShiftBehaviors.DemandDecrease:
+      return "Demand Decrease";
+    case ShiftBehaviors.DoubleDemandDecreaseSupplyDecrease:
+      return "Supply Decrease, Demand Decrease";
+    case ShiftBehaviors.DoubleDemandDecreaseSupplyIncrease:
+      return "Supply Increase, Demand Decrease";
+    case ShiftBehaviors.DoubleDemandIncreaseSupplyDecrease:
+      return "Supply Decrease, Demand Increase";
+    case ShiftBehaviors.DoubleDemandIncreaseSupplyIncrease:
+      return "Supply Increase, Demand Increase";
+    default:
+      return "None";
+  }
+}
+
 function App() {
   const [selectedSupplyDeterminant, setSelectedSupplyDeterminant] = useState(emptyDet);
   const [selectedDemandDeterminant, setSelectedDemandDeterminant] = useState(emptyDet);
@@ -627,6 +647,15 @@ function App() {
         {/* Chart */}
         <Grid item xs={6}>
           <Graph />
+          <Typography alignItems="center" variant="h5" component="div">
+            <div text-align="center">
+              <p text-align="center">Type of Shift: {getPrettyShiftBehavior(shiftBehavior)}</p>
+            </div>
+            <br />
+            Price:
+            <br />
+            Quantity:
+          </Typography>
         </Grid>
 
         {/* Supply & Demand Column */}

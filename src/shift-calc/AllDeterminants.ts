@@ -80,16 +80,27 @@ export function getBehaviorGivenShifts(supplyDet: Determinant, supplySubDet: Sub
       {
         supplyBehavior = supplyDet.decreaseBehavior;
       }
+      else
+      {
+        isSupplyChange = false;
+      }
     }
     else
     {
+      if (supplySubDet.shortName == "") isSupplyChange = false;
       if (supplyChange == ShiftChange.Increase)
       {
         supplyBehavior = supplySubDet.increaseBehavior;
       }
       else if (supplyChange == ShiftChange.Decrease)
       {
+        console.log("should be here");
+        console.log(ShiftBehaviors[supplySubDet.decreaseBehavior]);
         supplyBehavior = supplySubDet.decreaseBehavior;
+      }
+      else
+      {
+        isSupplyChange = false;
       }
     }
   }
@@ -111,9 +122,15 @@ export function getBehaviorGivenShifts(supplyDet: Determinant, supplySubDet: Sub
       {
         demandBehavior = demandDet.decreaseBehavior;
       }
+      else
+      {
+        isDemandChange = false;
+        demandBehavior = undefined;
+      }
     }
     else
     {
+      if (demandSubDet.shortName == "") isDemandChange = false;
       if (demandChange == ShiftChange.Increase)
       {
         demandBehavior = demandSubDet.increaseBehavior;
@@ -122,7 +139,16 @@ export function getBehaviorGivenShifts(supplyDet: Determinant, supplySubDet: Sub
       {
         demandBehavior = demandSubDet.decreaseBehavior;
       }
+      else
+      {
+        isDemandChange = false;
+        demandBehavior = undefined;
+      }
     }
+  }
+  else
+  {
+    isDemandChange = false;
   }
 
   if (isSupplyChange && !isDemandChange)
