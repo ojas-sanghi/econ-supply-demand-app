@@ -10,8 +10,6 @@ export class SubDeterminant
   increaseBehavior: ShiftBehaviors;
   // when this determinant is decreased, what happens?
   decreaseBehavior: ShiftBehaviors;
-  increaseResults: ShiftResults[];
-  decreaseResults: ShiftResults[];
 
   constructor(shortName: string, longName: string, increaseBehavior: ShiftBehaviors, decreaseBehavior: ShiftBehaviors)
   {
@@ -20,8 +18,6 @@ export class SubDeterminant
 
     this.increaseBehavior = increaseBehavior;
     this.decreaseBehavior = decreaseBehavior;
-    this.increaseResults = getResultsGivenBehavior(this.increaseBehavior);
-    this.decreaseResults = getResultsGivenBehavior(this.decreaseBehavior);
   }
 
 }
@@ -46,43 +42,11 @@ export class Determinant
 
     this.increaseBehavior = increaseBehavior;
     this.decreaseBehavior = decreaseBehavior;
-    this.increaseResults = this.increaseBehavior == undefined ? undefined : getResultsGivenBehavior(this.increaseBehavior);
-    this.decreaseResults = this.decreaseBehavior == undefined ? undefined : getResultsGivenBehavior(this.decreaseBehavior);
   }
 
   addSubDeterminant(subShortName: string, subLongName: string, subIncreaseBehavior: ShiftBehaviors, subDecreaseBehavior: ShiftBehaviors)
   {
     let newSubDet = new SubDeterminant(subShortName, subLongName, subIncreaseBehavior, subDecreaseBehavior);
     this.subDeterminants.push(newSubDet);
-  }
-}
-
-function getResultsGivenBehavior(behavior: ShiftBehaviors): ShiftResults[] {
-  switch (behavior) {
-    // PUp, QDown
-    case ShiftBehaviors.SupplyDecrease:
-      return [ShiftResults.PriceIncrease, ShiftResults.QuantityDecrease];
-      // PDown, QUp
-    case ShiftBehaviors.SupplyIncrease:
-      return [ShiftResults.PriceDecrease, ShiftResults.QuantityIncrease];
-      // PDown, QDown
-    case ShiftBehaviors.DemandDecrease:
-      return [ShiftResults.PriceDecrease, ShiftResults.QuantityDecrease];
-      // PUp, QUp
-    case ShiftBehaviors.DemandIncrease:
-      return [ShiftResults.PriceIncrease, ShiftResults.QuantityIncrease];
-
-      // P?, QDown
-    case ShiftBehaviors.DoubleDemandDecreaseSupplyDecrease:
-      return [ShiftResults.PriceUnsure, ShiftResults.QuantityDecrease];
-      // PDown, Q?
-    case ShiftBehaviors.DoubleDemandDecreaseSupplyIncrease:
-      return [ShiftResults.PriceDecrease, ShiftResults.QuantityUnsure];
-      // PUp, Q?
-    case ShiftBehaviors.DoubleDemandIncreaseSupplyDecrease:
-      return [ShiftResults.PriceIncrease, ShiftResults.QuantityUnsure];
-      // P?, QUp
-    case ShiftBehaviors.DoubleDemandIncreaseSupplyIncrease:
-      return [ShiftResults.PriceUnsure, ShiftResults.QuantityIncrease];
   }
 }

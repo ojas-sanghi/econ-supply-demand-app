@@ -13,9 +13,11 @@ import {
   RadioGroup,
   FormControl,
   FormControlLabel,
+  Icon
 } from "@mui/material";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
+import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
 import Select, { SingleValue } from "react-select";
 import { Determinant, SubDeterminant } from "./shift-calc/Determinant";
 import {
@@ -24,8 +26,9 @@ import {
   emptySubDet,
   emptyDet,
   getBehaviorGivenShifts,
+  getResultsGivenBehavior
 } from "./shift-calc/AllDeterminants";
-import { ShiftChange, ShiftBehaviors } from "./shift-calc/ShiftEnums";
+import { ShiftChange, ShiftBehaviors, ShiftResults } from "./shift-calc/ShiftEnums";
 
 const supplyDetOptions = supplyDeterminants.map((det) => ({
   value: det,
@@ -583,6 +586,51 @@ function getPrettyShiftBehavior(shift: ShiftBehaviors | undefined) {
   }
 }
 
+function getPriceResultIcon(shift: ShiftBehaviors | undefined)
+{
+  if (shift == undefined) return "None";
+
+  var result = getResultsGivenBehavior(shift);
+  var realResult = result[0];
+  if (realResult == ShiftResults.PriceIncrease)
+  {
+    return <ArrowUpwardIcon />;
+  } 
+  else if (realResult == ShiftResults.PriceDecrease)
+  {
+    return <ArrowDownwardIcon />;
+  }
+  else if (realResult == ShiftResults.PriceUnsure)
+  {
+    return <QuestionMarkIcon />;
+  }
+
+  return "No change";
+}
+
+function getQuantityResultIcon(shift: ShiftBehaviors | undefined)
+{
+  if (shift == undefined) return "None";
+
+  var result = getResultsGivenBehavior(shift);
+  var realResult = result[1];
+
+  if (realResult == ShiftResults.QuantityIncrease)
+  {
+    return <ArrowUpwardIcon />;
+  } 
+  else if (realResult == ShiftResults.QuantityDecrease)
+  {
+    return <ArrowDownwardIcon />;
+  }
+  else if (realResult == ShiftResults.QuantityUnsure)
+  {
+    return <QuestionMarkIcon />;
+  }
+
+  return "No change";
+}
+
 function App() {
   const [selectedSupplyDeterminant, setSelectedSupplyDeterminant] = useState(emptyDet);
   const [selectedDemandDeterminant, setSelectedDemandDeterminant] = useState(emptyDet);
@@ -647,15 +695,27 @@ function App() {
         {/* Chart */}
         <Grid item xs={6}>
           <Graph />
-          <Typography alignItems="center" variant="h5" component="div">
-            <div text-align="center">
-              <p text-align="center">Type of Shift: {getPrettyShiftBehavior(shiftBehavior)}</p>
-            </div>
-            <br />
-            Price:
-            <br />
-            Quantity:
-          </Typography>
+          <br />
+          <Grid container spacing={2}>
+            <Grid item xs={6}>
+              <Typography variant="h6" align="right">Type of Shift:</Typography>
+            </Grid>
+            <Grid item xs={6}>
+              <Typography variant="h6" align="left">{getPrettyShiftBehavior(shiftBehavior)}</Typography>
+            </Grid>
+            <Grid item xs={6}>
+              <Typography variant="h6" align="right">Price:</Typography>
+            </Grid>
+            <Grid item xs={6}>
+              <Typography variant="h6" align="left">{getPriceResultIcon(shiftBehavior)}</Typography>
+            </Grid>
+            <Grid item xs={6}>
+              <Typography variant="h6" align="right">Quantity:</Typography>
+            </Grid>
+            <Grid item xs={6}>
+              <Typography variant="h6" align="left">{getQuantityResultIcon(shiftBehavior)}</Typography>
+            </Grid>
+          </Grid>
         </Grid>
 
         {/* Supply & Demand Column */}

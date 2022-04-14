@@ -1,5 +1,5 @@
 import {Determinant, SubDeterminant} from './Determinant';
-import {ShiftBehaviors, ShiftChange} from './ShiftEnums';
+import {ShiftBehaviors, ShiftChange, ShiftResults} from './ShiftEnums';
 
 
 ///////////////////////
@@ -181,6 +181,40 @@ export function getBehaviorGivenShifts(supplyDet: Determinant, supplySubDet: Sub
   }
 
   return undefined;
+}
+
+
+export function getResultsGivenBehavior(behavior: ShiftBehaviors): ShiftResults[] | string {
+  switch (behavior) {
+    // PUp, QDown
+    case ShiftBehaviors.SupplyDecrease:
+      return [ShiftResults.PriceIncrease, ShiftResults.QuantityDecrease];
+      // PDown, QUp
+    case ShiftBehaviors.SupplyIncrease:
+      return [ShiftResults.PriceDecrease, ShiftResults.QuantityIncrease];
+      // PDown, QDown
+    case ShiftBehaviors.DemandDecrease:
+      return [ShiftResults.PriceDecrease, ShiftResults.QuantityDecrease];
+      // PUp, QUp
+    case ShiftBehaviors.DemandIncrease:
+      return [ShiftResults.PriceIncrease, ShiftResults.QuantityIncrease];
+
+      // P?, QDown
+    case ShiftBehaviors.DoubleDemandDecreaseSupplyDecrease:
+      return [ShiftResults.PriceUnsure, ShiftResults.QuantityDecrease];
+      // PDown, Q?
+    case ShiftBehaviors.DoubleDemandDecreaseSupplyIncrease:
+      return [ShiftResults.PriceDecrease, ShiftResults.QuantityUnsure];
+      // PUp, Q?
+    case ShiftBehaviors.DoubleDemandIncreaseSupplyDecrease:
+      return [ShiftResults.PriceUnsure, ShiftResults.QuantityIncrease];
+      // P?, QUp
+    case ShiftBehaviors.DoubleDemandIncreaseSupplyIncrease:
+      return [ShiftResults.PriceIncrease, ShiftResults.QuantityUnsure];
+    
+    default:
+      return "None";
+  }
 }
 
 export {supplyDeterminants, demandDeterminants, emptyDet, emptySubDet};
