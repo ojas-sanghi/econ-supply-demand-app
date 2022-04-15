@@ -13,11 +13,11 @@ import {
   RadioGroup,
   FormControl,
   FormControlLabel,
-  Icon
 } from "@mui/material";
+import { red, green, blue } from "@mui/material/colors";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
-import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
+import QuestionMarkIcon from "@mui/icons-material/QuestionMark";
 import Select, { SingleValue } from "react-select";
 import { Determinant, SubDeterminant } from "./shift-calc/Determinant";
 import {
@@ -26,7 +26,7 @@ import {
   emptySubDet,
   emptyDet,
   getBehaviorGivenShifts,
-  getResultsGivenBehavior
+  getResultsGivenBehavior,
 } from "./shift-calc/AllDeterminants";
 import { ShiftChange, ShiftBehaviors, ShiftResults } from "./shift-calc/ShiftEnums";
 
@@ -562,66 +562,102 @@ const DetChangeRadioButtons = ({
 function getPrettyShiftBehavior(shift: ShiftBehaviors | undefined) {
   switch (shift) {
     case ShiftBehaviors.SupplyIncrease:
-      return "Supply Increase";
+      return (
+        <>
+          <p style={{ display: "inline" }}> Supply </p>
+          <p style={{ color: "green", display: "inline" }}> Increase </p>
+        </>
+      );
     case ShiftBehaviors.SupplyDecrease:
-      return "Supply Decrease";
+      return (
+        <>
+          <p style={{ display: "inline" }}> Supply </p>
+          <p style={{ color: "red", display: "inline" }}> Decrease </p>
+        </>
+      );
     case ShiftBehaviors.DemandIncrease:
-      return "Demand Increase";
+      return (
+        <>
+          <p style={{ display: "inline" }}> Demand </p>
+          <p style={{ color: "green", display: "inline" }}> Increase </p>
+        </>
+      );
     case ShiftBehaviors.DemandDecrease:
-      return "Demand Decrease";
+      return (
+        <>
+          <p style={{ display: "inline" }}> Demand </p>
+          <p style={{ color: "red", display: "inline" }}> Decrease </p>
+        </>
+      );
     case ShiftBehaviors.DoubleDemandDecreaseSupplyDecrease:
-      return "Supply Decrease, Demand Decrease";
+      return (
+        <>
+          <p style={{ display: "inline" }}> Supply </p>
+          <p style={{ color: "red", display: "inline" }}> Decrease, </p>
+          <p style={{ display: "inline" }}> Demand </p>
+          <p style={{ color: "red", display: "inline" }}> Decrease </p>
+        </>
+      );
     case ShiftBehaviors.DoubleDemandDecreaseSupplyIncrease:
-      return "Supply Increase, Demand Decrease";
+      return (
+        <>
+          <p style={{ display: "inline" }}> Supply </p>
+          <p style={{ color: "green", display: "inline" }}> Increase, </p>
+          <p style={{ display: "inline" }}> Demand </p>
+          <p style={{ color: "red", display: "inline" }}> Decrease </p>
+        </>
+      );
     case ShiftBehaviors.DoubleDemandIncreaseSupplyDecrease:
-      return "Supply Decrease, Demand Increase";
+      return (
+        <>
+          <p style={{ display: "inline" }}> Supply </p>
+          <p style={{ color: "red", display: "inline" }}> Decrease, </p>
+          <p style={{ display: "inline" }}> Demand </p>
+          <p style={{ color: "green", display: "inline" }}> Increase </p>
+        </>
+      );
     case ShiftBehaviors.DoubleDemandIncreaseSupplyIncrease:
-      return "Supply Increase, Demand Increase";
+      return (
+        <>
+          <p style={{ display: "inline" }}> Supply </p>
+          <p style={{ color: "green", display: "inline" }}> Increase, </p>
+          <p style={{ display: "inline" }}> Demand </p>
+          <p style={{ color: "green", display: "inline" }}> Increase </p>
+        </>
+      );
     default:
       return "None";
   }
 }
 
-function getPriceResultIcon(shift: ShiftBehaviors | undefined)
-{
+function getPriceResultIcon(shift: ShiftBehaviors | undefined) {
   if (shift == undefined) return "None";
 
   var result = getResultsGivenBehavior(shift);
   var realResult = result[0];
-  if (realResult == ShiftResults.PriceIncrease)
-  {
-    return <ArrowUpwardIcon />;
-  } 
-  else if (realResult == ShiftResults.PriceDecrease)
-  {
-    return <ArrowDownwardIcon />;
-  }
-  else if (realResult == ShiftResults.PriceUnsure)
-  {
-    return <QuestionMarkIcon />;
+  if (realResult == ShiftResults.PriceIncrease) {
+    return <ArrowUpwardIcon sx={{ color: green[500], fontSize: 30 }} />;
+  } else if (realResult == ShiftResults.PriceDecrease) {
+    return <ArrowDownwardIcon sx={{ color: red[500], fontSize: 30 }} />;
+  } else if (realResult == ShiftResults.PriceUnsure) {
+    return <QuestionMarkIcon sx={{ color: blue[500], fontSize: 30 }} />;
   }
 
   return "No change";
 }
 
-function getQuantityResultIcon(shift: ShiftBehaviors | undefined)
-{
+function getQuantityResultIcon(shift: ShiftBehaviors | undefined) {
   if (shift == undefined) return "None";
 
   var result = getResultsGivenBehavior(shift);
   var realResult = result[1];
 
-  if (realResult == ShiftResults.QuantityIncrease)
-  {
-    return <ArrowUpwardIcon />;
-  } 
-  else if (realResult == ShiftResults.QuantityDecrease)
-  {
-    return <ArrowDownwardIcon />;
-  }
-  else if (realResult == ShiftResults.QuantityUnsure)
-  {
-    return <QuestionMarkIcon />;
+  if (realResult == ShiftResults.QuantityIncrease) {
+    return <ArrowUpwardIcon sx={{ color: green[500], fontSize: 30 }} />;
+  } else if (realResult == ShiftResults.QuantityDecrease) {
+    return <ArrowDownwardIcon sx={{ color: red[500], fontSize: 30 }} />;
+  } else if (realResult == ShiftResults.QuantityUnsure) {
+    return <QuestionMarkIcon sx={{ color: blue[500], fontSize: 30 }} />;
   }
 
   return "No change";
@@ -694,22 +730,34 @@ function App() {
           <br />
           <Grid container spacing={2}>
             <Grid item xs={6}>
-              <Typography variant="h6" align="right">Type of Shift:</Typography>
+              <Typography variant="h6" align="right">
+                Type of Shift:
+              </Typography>
             </Grid>
             <Grid item xs={6}>
-              <Typography variant="h6" align="left">{getPrettyShiftBehavior(shiftBehavior)}</Typography>
+              <Typography variant="h6" align="left">
+                {getPrettyShiftBehavior(shiftBehavior)}
+              </Typography>
             </Grid>
             <Grid item xs={6}>
-              <Typography variant="h6" align="right">Price Change:</Typography>
+              <Typography variant="h6" align="right">
+                Price Change:
+              </Typography>
             </Grid>
             <Grid item xs={6}>
-              <Typography variant="h6" align="left">{getPriceResultIcon(shiftBehavior)}</Typography>
+              <Typography variant="h6" align="left">
+                {getPriceResultIcon(shiftBehavior)}
+              </Typography>
             </Grid>
             <Grid item xs={6}>
-              <Typography variant="h6" align="right">Quantity Change:</Typography>
+              <Typography variant="h6" align="right">
+                Quantity Change:
+              </Typography>
             </Grid>
             <Grid item xs={6}>
-              <Typography variant="h6" align="left">{getQuantityResultIcon(shiftBehavior)}</Typography>
+              <Typography variant="h6" align="left">
+                {getQuantityResultIcon(shiftBehavior)}
+              </Typography>
             </Grid>
           </Grid>
         </Grid>
