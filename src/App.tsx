@@ -268,8 +268,8 @@ const doubleDemandIncreaseSupplyDecreaseLine = (
       strokeDasharray="8"
       strokeWidth={2}
       segment={[
-        { x: 3.022, y: 0 },
-        { x: 3.022, y: 500 },
+        { x: 2, y: 0 },
+        { x: 2, y: 750 },
       ]}
     />
     <ReferenceLine
@@ -277,8 +277,8 @@ const doubleDemandIncreaseSupplyDecreaseLine = (
       strokeDasharray="8"
       strokeWidth={2}
       segment={[
-        { x: 2, y: 500 },
-        { x: 3.022, y: 500 },
+        { x: 0, y: 750 },
+        { x: 2, y: 750 },
       ]}
     />
     <Line
@@ -311,7 +311,7 @@ const doubleDemandIncreaseSupplyIncreaseLine = (
       strokeWidth={2}
       segment={[
         { x: 2, y: 500 },
-        { x: 2, y: 750 },
+        { x: 3.022, y: 500 },
       ]}
     />
     <ReferenceLine
@@ -319,8 +319,8 @@ const doubleDemandIncreaseSupplyIncreaseLine = (
       strokeDasharray="8"
       strokeWidth={2}
       segment={[
-        { x: 0, y: 750 },
-        { x: 2, y: 750 },
+        { x: 3.022, y: 0 },
+        { x: 3.022, y: 500 },
       ]}
     />
     <Line

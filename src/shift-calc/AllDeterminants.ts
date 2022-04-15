@@ -207,10 +207,10 @@ export function getResultsGivenBehavior(behavior: ShiftBehaviors): ShiftResults[
       return [ShiftResults.PriceDecrease, ShiftResults.QuantityUnsure];
       // PUp, Q?
     case ShiftBehaviors.DoubleDemandIncreaseSupplyDecrease:
-      return [ShiftResults.PriceUnsure, ShiftResults.QuantityIncrease];
+      return [ShiftResults.PriceIncrease, ShiftResults.QuantityUnsure];
       // P?, QUp
     case ShiftBehaviors.DoubleDemandIncreaseSupplyIncrease:
-      return [ShiftResults.PriceIncrease, ShiftResults.QuantityUnsure];
+      return [ShiftResults.PriceUnsure, ShiftResults.QuantityIncrease];
     
     default:
       return "None";
