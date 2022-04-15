@@ -94,8 +94,6 @@ export function getBehaviorGivenShifts(supplyDet: Determinant, supplySubDet: Sub
       }
       else if (supplyChange == ShiftChange.Decrease)
       {
-        console.log("should be here");
-        console.log(ShiftBehaviors[supplySubDet.decreaseBehavior]);
         supplyBehavior = supplySubDet.decreaseBehavior;
       }
       else
