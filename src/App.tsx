@@ -42,10 +42,6 @@ const demandDetOptions = demandDeterminants.map((det) => ({
 
 var shiftBehavior: ShiftBehaviors | undefined;
 
-// TODO:
-// also display the type of shift (demand icnrease, decrease, duble demand icnrese etc) at the bottom
-// plus a price increase and quantity ddecease thing
-
 const supplyIncreaseLine = (
   <>
     <ReferenceLine
@@ -704,13 +700,13 @@ function App() {
               <Typography variant="h6" align="left">{getPrettyShiftBehavior(shiftBehavior)}</Typography>
             </Grid>
             <Grid item xs={6}>
-              <Typography variant="h6" align="right">Price:</Typography>
+              <Typography variant="h6" align="right">Price Change:</Typography>
             </Grid>
             <Grid item xs={6}>
               <Typography variant="h6" align="left">{getPriceResultIcon(shiftBehavior)}</Typography>
             </Grid>
             <Grid item xs={6}>
-              <Typography variant="h6" align="right">Quantity:</Typography>
+              <Typography variant="h6" align="right">Quantity Change:</Typography>
             </Grid>
             <Grid item xs={6}>
               <Typography variant="h6" align="left">{getQuantityResultIcon(shiftBehavior)}</Typography>
