@@ -26,15 +26,30 @@
     -->
     <title>Econ Supply and Demand App</title>
 
-    <script src="https://getinsights.io/js/insights.js"></script>
-    <script>
-    insights.init('z3LJqrQ8DEB1EZhI');
-    insights.trackPages();
-    </script>
+    <script src="https://swetrix.org/swetrix.js" defer></script>
 
   </head>
   <body>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        // Initialising the script with the Project ID
+        // you can find in the dashboard
+        swetrix.init('0SEvsNUdaAsy')
+    
+        // Tracking page views
+        swetrix.trackViews()
+      })
+    </script>
+
+    <noscript>
+      You need to enable JavaScript to run this app.
+
+      <img
+      src="https://api.swetrix.com/log/noscript?pid=0SEvsNUdaAsy"
+      alt=""
+      referrerpolicy="no-referrer-when-downgrade"
+    />
+    </noscript>
     <div id="root"></div>
     <!--
       This HTML file is a template.
